@@ -1,0 +1,203 @@
+import React from 'react';
+// import { jsPDF } from 'jspdf';
+import type { AnalysisResult, AnalysisFinding } from '@/types';
+import { RiskLevel } from '@/types';
+import RiskBadge from './RiskBadge';
+
+interface AnalysisResultProps {
+    result: AnalysisResult | null;
+    error: string | null;
+    onScanNew: () => void;
+}
+
+const RiskScoreGauge: React.FC<{ score: number }> = ({ score }: { score: number; }) => {
+    const getScoreColor = (s: number) => {
+        if (s > 80) return 'text-red-500';
+        if (s > 60) return 'text-orange-500';
+        if (s > 40) return 'text-yellow-500';
+        return 'text-green-500';
+    };
+
+    const circumference = 2 * Math.PI * 52;
+    const offset = circumference - (score / 100) * circumference;
+
+    return (
+        <div className="relative h-32 w-32">
+            <svg className="transform -rotate-90" width="100%" height="100%" viewBox="0 0 120 120">
+                <circle cx="60" cy="60" r="52" strokeWidth="12" stroke="currentColor" className="text-slate-700" fill="transparent" />
+                <circle cx="60" cy="60" r="52" strokeWidth="12" stroke="currentColor" fill="transparent"
+                    strokeDasharray={circumference}
+                    strokeDashoffset={offset}
+                    strokeLinecap="round"
+                    className={`${getScoreColor(score)} transition-all duration-1000 ease-in-out`}
+                />
+            </svg>
+            <span className={`absolute inset-0 flex items-center justify-center text-3xl font-bold ${getScoreColor(score)}`}>{score}</span>
+        </div>
+    );
+};
+
+const FindingCard: React.FC<{ finding: AnalysisFinding }> = ({ finding }) => {
+    return (
+        <div className="bg-slate-800 rounded-lg p-4 border border-slate-700 transition-all hover:border-slate-600 hover:bg-slate-800/80">
+            <div className="flex justify-between items-start mb-2">
+                <h3 className="text-lg font-semibold text-slate-100">{finding.category}</h3>
+                <RiskBadge risk={finding.severity} />
+            </div>
+            <p className="text-slate-300">{finding.description}</p>
+            {finding.codeSnippet && (
+                <pre className="mt-3 bg-slate-900 p-3 rounded-md text-xs text-red-300 overflow-x-auto">
+                    <code>{finding.codeSnippet}</code>
+                </pre>
+            )}
+        </div>
+    );
+};
+
+const AnalysisResultDisplay: React.FC<AnalysisResultProps> = ({ result, error, onScanNew }) => {
+
+    if (error) {
+        return (
+            <div className="text-center bg-slate-800/50 p-8 rounded-xl border border-red-500/50">
+                <h2 className="text-2xl font-bold text-red-400">Analysis Failed</h2>
+                <p className="mt-2 text-slate-300">{error}</p>
+                <button onClick={onScanNew} className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-5 rounded-md transition duration-200">
+                    Try Again
+                </button>
+            </div>
+        )
+    }
+
+    if (!result) return null;
+
+    const getRiskMessage = (riskLevel: RiskLevel): string => {
+        switch (riskLevel) {
+            case RiskLevel.Low:
+                return "The risk is low. The website appears to be safe.";
+            case RiskLevel.Medium:
+                return "The risk is medium. Caution is advised.";
+            case RiskLevel.High:
+                return "The risk is high. Be careful when interacting with this website.";
+            case RiskLevel.VeryHigh:
+                return "The risk is very high. It is recommended to avoid this website.";
+            case RiskLevel.Unknown:
+            default:
+                return "The risk level is unknown. Proceed with caution.";
+        }
+    };
+
+    const riskMessage = getRiskMessage(result.overallRisk);
+
+    // const downloadAsPDF = () => {
+    //     const doc = new jsPDF();
+    //     doc.text(`Overall Risk: ${result.overallRisk}`, 10, 10);
+    //     doc.text(riskMessage, 10, 20);
+    //     doc.text(`Summary: ${result.summary}`, 10, 30);
+
+    //     let yOffset = 40;
+    //     result.detailedAnalysis.forEach((finding, index) => {
+    //         doc.text(`Finding ${index + 1}:`, 10, yOffset);
+    //         doc.text(`Category: ${finding.category}`, 10, yOffset + 10);
+    //         doc.text(`Severity: ${finding.severity}`, 10, yOffset + 20);
+    //         doc.text(`Description: ${finding.description}`, 10, yOffset + 30);
+    //         if (finding.codeSnippet) {
+    //             doc.text(`Code Snippet: ${finding.codeSnippet}`, 10, yOffset + 40);
+    //         }
+    //         yOffset += 50;
+    //     });
+
+    //     doc.save('analysis-result.pdf');
+    // };
+
+    const downloadAsMarkdown = () => {
+        let markdownContent = `# Analysis Result\n\n**Overall Risk:** ${result.overallRisk}\n\n${riskMessage}\n\n**Summary:**\n\n${result.summary}\n\n## Detailed Findings\n\n`;
+        result.detailedAnalysis.forEach((finding, index) => {
+            markdownContent += `### Finding ${index + 1}\n- **Category:** ${finding.category}\n- **Severity:** ${finding.severity}\n- **Description:** ${finding.description}\n`;
+            if (finding.codeSnippet) {
+                markdownContent += `- **Code Snippet:**\n\`\`\`\n${finding.codeSnippet}\n\`\`\`\n`;
+            }
+            markdownContent += `\n`;
+        });
+
+        const blob = new Blob([markdownContent], { type: 'text/markdown' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'analysis-result.md';
+        link.click();
+    };
+
+    const downloadAsText = () => {
+        let textContent = `Overall Risk: ${result.overallRisk}\n\n${riskMessage}\n\nSummary:\n\n${result.summary}\n\nDetailed Findings:\n\n`;
+        result.detailedAnalysis.forEach((finding, index) => {
+            textContent += `Finding ${index + 1}:\nCategory: ${finding.category}\nSeverity: ${finding.severity}\nDescription: ${finding.description}\n`;
+            if (finding.codeSnippet) {
+                textContent += `Code Snippet:\n${finding.codeSnippet}\n`;
+            }
+            textContent += `\n`;
+        });
+
+        const blob = new Blob([textContent], { type: 'text/plain' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = 'analysis-result.txt';
+        link.click();
+    };
+
+    return (
+        <div className="space-y-8 animate-fade-in">
+            <div className="bg-slate-800/50 p-6 rounded-xl shadow-2xl border border-slate-700 grid md:grid-cols-3 gap-6 items-center">
+                <div className="flex justify-center md:justify-start">
+                    <RiskScoreGauge score={result.riskScore} />
+                </div>
+                <div className="md:col-span-2 text-center md:text-left">
+                    <div className="flex items-center justify-center md:justify-start gap-3">
+                        <h2 className="text-2xl font-bold text-slate-100">Overall Risk</h2>
+                        <RiskBadge risk={result.overallRisk} large />
+                    </div>
+                    <p className="mt-2 text-slate-300 text-lg">{riskMessage}</p>
+                    <p className="mt-2 text-slate-300 text-lg">{result.summary}</p>
+
+                </div>
+            </div>
+
+            <div className="space-y-4">
+                <h3 className="text-xl font-semibold text-slate-200">Detailed Findings</h3>
+                {result.detailedAnalysis.length > 0 ? (
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                        {result.detailedAnalysis.map((finding, index) => (
+                            <FindingCard key={index} finding={finding} />
+                        ))}
+                    </div>
+                ) : (
+                    <div className="text-center py-10 bg-slate-800/50 rounded-lg border border-slate-700">
+                        <p className="text-slate-300">No specific issues found. The website appears to be safe.</p>
+                    </div>
+                )}
+            </div>
+
+            <div className="text-center pt-4">
+                <button onClick={onScanNew} className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-md transition duration-200">
+                    Scan Another Site
+                </button>
+                <div className="flex items-center justify-center mt-4">
+                    <div className="border-t border-slate-700 w-1/4"></div>
+                    {/* <span className="mx-4 text-slate-300">OR</span> */}
+                    <div className="border-t border-slate-700 w-1/4"></div>
+                </div>
+                <div className="mt-4">
+                    <h4 className="text-lg font-semibold text-slate-200">Download Results</h4>
+                    <div className="mt-2 space-x-2">
+                        <button onClick={downloadAsMarkdown} className="bg-yellow-600 hover:bg-yellow-700 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                            .md
+                        </button>
+                        <button onClick={downloadAsText} className="bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded-md transition duration-200">
+                            .txt
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+};
+
+export default AnalysisResultDisplay;

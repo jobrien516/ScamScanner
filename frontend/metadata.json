@@ -1,0 +1,5 @@
+{
+  "name": "ScamScan",
+  "description": "An AI-powered tool that analyzes a website's source code to detect potential scam tactics, phishing attempts, and other malicious activities using Google's Gemini API.",
+  "requestFramePermissions": []
+}
