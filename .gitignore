@@ -227,10 +227,12 @@ dist-ssr
 .vscode/*
 !.vscode/extensions.json
 .idea
-.DS_Store
+*.DS_Store
 *.suo
 *.ntvs*
 *.njsproj
 *.sln
 *.sw?
 scamscan/downloaded_sites.db
+*.db
+hidden

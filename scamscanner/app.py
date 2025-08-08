@@ -4,7 +4,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from scamscan.api.endpoints import router
 
 app = FastAPI(
-    title="ScamScan API",
+    title="ScamScanner API",
     description="API for scamscan",
     version="0.1.0",
 )
