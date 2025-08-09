@@ -1,10 +1,13 @@
 import re
 from pydantic import BaseModel
 from loguru import logger
-from config import get_settings
+import os
+from google import genai
+from dotenv import load_dotenv
+from loguru import logger
 from services.llm import generate_analysis
 
-settings = get_settings()
+from models.constants import SYSTEM_PROMPT
 
 
 def clean_markdown_code_blocks(markdown_text: str) -> str:
@@ -18,23 +21,29 @@ def clean_markdown_code_blocks(markdown_text: str) -> str:
     return markdown_text
 
 
-class WebsiteAnalyzer(BaseModel):
-    api_key: str = str(settings.GEMINI_KEY)
+class WebsiteAnalyzer:
 
-    async def analyze_website_html(self, html: str):
-        if not self.api_key:
-            raise EnvironmentError(
-                "API_KEY environment variable not set. Please configure your API key."
-            )
+    async def analyze_website_html(self, html_content: str) -> str:
+        """
+        Analyzes the provided HTML content using the generative AI model.
 
+        Args:
+            html_content: The HTML content of the website to analyze.
+
+        Returns:
+            A JSON string containing the analysis result.
+        """
         try:
-            json_text = await generate_analysis(html)
-            if not json_text:
-                raise ValueError("AI returned an empty response. Please try again.")
-            result = clean_markdown_code_blocks(str(json_text))
+            logger.info("Starting website HTML analysis.")
+            response = await generate_analysis(html=html_content)
 
-            return result
+            if response:
+                logger.info("Successfully received analysis from AI model.")
+                return response
+            else:
+                logger.error(f"AI model returned an empty response. Feedback: {response}")
+                raise ValueError("AI model returned no content, possibly due to safety settings or other issues.")
 
         except Exception as e:
-            logger.error(f"Error analyzing website with Gemini: {e}")
-            raise RuntimeError(f"AI analysis failed: {str(e)}")
+            logger.error(f"Error during website analysis: {e}")
+            raise

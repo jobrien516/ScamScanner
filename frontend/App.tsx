@@ -27,22 +27,22 @@ const App: React.FC = () => {
     setCurrentUrl('');
   }, []);
 
-  const handleUrlSubmit = useCallback(async (url: string) => {
-    setCurrentUrl(url);
-    setView(ViewState.LOADING);
-    setError(null);
-    setAnalysisResult(null);
+    const handleUrlSubmit = useCallback(async (url: string) => {
+        setCurrentUrl(url);
+        setView(ViewState.LOADING);
+        setError(null);
+        setAnalysisResult(null);
 
-    try {
-      const result = await analyzeUrl(url);
-      setAnalysisResult(result);
-      setView(ViewState.RESULT);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(errorMessage);
-      setView(ViewState.MANUAL_INPUT);
-    }
-  }, []);
+        try {
+            const result = await analyzeUrl(url);
+            setAnalysisResult(result);
+            setView(ViewState.RESULT);
+        } catch (err) {
+            const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+            setError(errorMessage);
+            setView(ViewState.START);
+        }
+    }, []);
 
   const handleManualSubmit = useCallback(async (html: string) => {
     setView(ViewState.LOADING);
@@ -53,32 +53,32 @@ const App: React.FC = () => {
       const result = await analyzeHtml(html);
       setAnalysisResult(result);
       setView(ViewState.RESULT);
-    } catch (err) { // <<< FIX WAS HERE: Added curly braces for the catch block
+    } catch (err) {
       const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
       setError(errorMessage);
       setView(ViewState.MANUAL_INPUT);
     }
   }, []);
 
-  const renderContent = () => {
-    switch (view) {
-      case ViewState.START:
-        return <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} />;
-      case ViewState.MANUAL_INPUT:
-        return <ManualInput onAnalyze={handleManualSubmit} error={error} url={currentUrl} onBack={resetState} />;
-      case ViewState.LOADING:
-        return (
-          <div className="flex flex-col items-center justify-center p-8 bg-slate-800/50 rounded-lg">
-            <Spinner />
-            <p className="mt-4 text-lg text-slate-300 animate-pulse">Analyzing...</p>
-          </div>
-        );
-      case ViewState.RESULT:
-        return <AnalysisResultDisplay result={analysisResult} error={error} onScanNew={resetState} />;
-      default:
-        return <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} />;
-    }
-  };
+    const renderContent = () => {
+        switch (view) {
+            case ViewState.START:
+                return <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error} />;
+            case ViewState.MANUAL_INPUT:
+                return <ManualInput onAnalyze={handleManualSubmit} error={error} url={currentUrl} onBack={resetState} />;
+            case ViewState.LOADING:
+                return (
+                    <div className="flex flex-col items-center justify-center p-8 bg-slate-800/50 rounded-lg">
+                        <Spinner />
+                        <p className="mt-4 text-lg text-slate-300 animate-pulse">Analyzing...</p>
+                    </div>
+                );
+            case ViewState.RESULT:
+                return <AnalysisResultDisplay result={analysisResult} error={error} onScanNew={resetState} />;
+            default:
+                return <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error}/>;
+        }
+    };
 
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col items-center p-4 sm:p-6 lg:p-8">

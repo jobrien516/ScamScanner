@@ -1,5 +1,6 @@
-from pydantic import BaseModel
+# from sqlmodel import SQLModel
 
 
-class UrlRequest(BaseModel):
-    url: str
+# class UrlRequest(SQLModel):
+#     """Pydantic model for URL-based requests."""
+#     url: str

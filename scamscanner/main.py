@@ -1,9 +1,41 @@
-# from services.workflows import main_workflow
-from services.db import init_db
+from fastapi import Request
+from fastapi.responses import JSONResponse
+from loguru import logger
+
+from services.db import create_db_and_tables
+from exceptions import WebsiteFetchError
+from app import app
+from services.website_fetcher import WebsiteFetcher
+
+
+@app.exception_handler(WebsiteFetchError)
+async def website_fetch_exception_handler(request: Request, exc: WebsiteFetchError):
+    """
+    Handles WebsiteFetchError exceptions globally, returning a 400 response.
+    """
+    logger.error(f"Caught a website fetch error: {exc.message}")
+    return JSONResponse(
+        status_code=400,
+        content={"detail": f"Could not access the website. Reason: {exc.message}"},
+    )
+
+@app.get("/")
+def read_root():
+    """Defines the root endpoint for the API."""
+    return {"message": "Welcome to the ScamScanner API"}
+
+async def main():
+    fetcher = WebsiteFetcher("https://backgroundreport.live/score006")
+    await fetcher.download_site()
+
 
 if __name__ == "__main__":
     import asyncio
+    # import uvicorn
 
-    asyncio.run(init_db())
+    asyncio.run(main())
 
+    
+    # asyncio.run(create_db_and_tables())
+    # uvicorn.run(app, host="0.0.0.0", port=8000)
     # asyncio.run(main_workflow("https://backgroundreport.live/score006"))

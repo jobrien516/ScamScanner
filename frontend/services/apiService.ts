@@ -1,4 +1,5 @@
 import type { AnalysisResult } from '@/types';
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 export class ApiError extends Error {
   constructor(message: string) {
@@ -7,34 +8,40 @@ export class ApiError extends Error {
   }
 }
 
-const BASE_API_URL = 'http://127.0.0.1:8000';
-
-export async function analyzeUrl(url: string): Promise<AnalysisResult> {
-  const response = await fetch(`${BASE_API_URL}/analyze`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ url }),
-  });
-
-  if (!response.ok) {
-    const errorData = await response.json().catch(() => ({}));
-    throw new ApiError(errorData.detail || 'Analysis failed on the server.');
-  }
-
-  return response.json();
-}
-
-export async function analyzeHtml(html: string): Promise<AnalysisResult> {
-    const response = await fetch(`${BASE_API_URL}/analyze-html`, {
+export const analyzeUrl = async (url: string): Promise<AnalysisResult> => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/analyze`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ html }),
+      body: JSON.stringify({ url }),
     });
-  
+
     if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new ApiError(errorData.detail || 'HTML analysis failed on the server.');
+      const errorData = await response.json();
+      throw new Error(errorData.detail || 'Failed to analyze URL');
     }
-  
-    return response.json();
+    return await response.json();
+  } catch (error) {
+    console.error('Error in analyzeUrl:', error);
+    throw error;
   }
+};
+
+export const analyzeHtml = async (html: string): Promise<AnalysisResult> => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/analyze-html`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ html }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || 'Failed to analyze HTML');
+      }
+      return await response.json();
+    } catch (error) {
+      console.error('Error in analyzeHtml:', error);
+      throw error;
+    }
+  };

@@ -12,7 +12,7 @@ const Header: React.FC = () => {
             <div className="flex items-center justify-center gap-4">
                 <ShieldIcon />
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-100 tracking-tight">
-                    AI Scam Site Scanner
+                    ScamScanner
                 </h1>
             </div>
             <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">

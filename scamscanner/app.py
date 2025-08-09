@@ -1,26 +1,42 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Request
+from fastapi.responses import JSONResponse
 from fastapi.middleware.cors import CORSMiddleware
+from contextlib import asynccontextmanager
+from loguru import logger
 
-from scamscan.api.endpoints import router
+from services.db import create_db_and_tables
+from api.endpoints import router
+from exceptions import WebsiteFetchError
 
-app = FastAPI(
-    title="ScamScanner API",
-    description="API for scamscan",
-    version="0.1.0",
-)
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    """
+    Handles application startup and shutdown events.
+    On startup, it initializes the database.
+    """
+    logger.info("Application starting up...")
+    await create_db_and_tables()
+    yield
+    logger.info("Application shutting down...")
 
-app.include_router(router)
+def create_app():
+    app = FastAPI(
+        title="ScamScanner API",
+        description="API for scamscan",
+        version="0.1.0",
+        lifespan=lifespan,
+    )
 
-if __name__ == "__main__":
-    import uvicorn
-    
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=["*"],
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
 
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    app.include_router(router)
+    return app
+
+app = create_app()

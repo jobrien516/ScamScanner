@@ -20,7 +20,7 @@ class AnalysisFinding:
 
 
 @dataclass
-class AnalysisResult:
+class AnalysisResultFull:
     overallRisk: RiskLevel
     riskScore: int
     summary: str

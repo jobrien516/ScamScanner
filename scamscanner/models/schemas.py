@@ -1,57 +1,52 @@
+from typing import List, Optional
 from datetime import datetime
-
-from sqlalchemy import Column, DateTime, String, Integer, ForeignKey, Enum as SqlEnum
-from sqlalchemy.orm import DeclarativeBase, relationship
-from sqlalchemy.dialects.postgresql import JSON
-from models.analysis import RiskLevel
+from sqlmodel import Field, SQLModel, Relationship, JSON, Column
+from enum import Enum as PyEnum
 
 
-class Base(DeclarativeBase):
-    pass
+class RiskLevel(str, PyEnum):
+    """Enumeration for risk levels."""
+    LOW = "Low"
+    MEDIUM = "Medium"
+    HIGH = "High"
+    VERY_HIGH = "Very High"
+    UNKNOWN = "Unknown"
 
 
-# class RiskLevel(Enum):
-#     LOW = 'Low'
-#     MEDIUM = 'Medium'
-#     HIGH = 'High'
-#     VERY_HIGH = 'Very High'
-#     UNKNOWN = 'Unknown'
+class AnalysisFinding(SQLModel):
+    """Represents a single finding in a website analysis. Not a table model."""
+    category: str
+    description: str
+    severity: RiskLevel
+    codeSnippet: Optional[str] = None
 
 
-class AnalysisResultDB(Base):
-    __tablename__ = "analysis_results"
+class AnalysisResult(SQLModel, table=True):
+    """Represents an analysis result as a database table."""
+    id: Optional[int] = Field(default=None, primary_key=True)
+    site_url: str = Field(index=True)
+    overallRisk: RiskLevel
+    riskScore: int
+    summary: str
+    detailedAnalysis: List[AnalysisFinding] = Field(default=[], sa_column=Column(JSON))
+    last_analyzed_at: datetime = Field(default_factory=datetime.now, index=True)
 
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    site_url = Column(
-        String, ForeignKey("sites.url"), nullable=False
-    )
-    overall_risk = Column(SqlEnum(RiskLevel), nullable=False)
-    risk_score = Column(Integer, nullable=False)
-    summary = Column(String, nullable=False)
-    detailed_analysis = Column(JSON, nullable=False)
-    last_analyzed_at = Column(DateTime, default=datetime.now, onupdate=datetime.now)
-
-    site = relationship("SiteDB", back_populates="analysis_results")
+    site_id: int = Field(foreign_key="site.id")
+    site: "Site" = Relationship(back_populates="analysis_results")
 
 
-# class AnalysisFindingDB(Base):
-#     __tablename__ = "analysis_findings"
+class Site(SQLModel, table=True):
+    """Represents a website's HTML content as a database table."""
+    id: Optional[int] = Field(default=None, primary_key=True)
+    url: str = Field(unique=True, index=True)
+    html: str
 
-#     id = Column(Integer, primary_key=True, autoincrement=True)
-#     result_id = Column(Integer, ForeignKey('analysis_results.id'), nullable=False)
-#     category = Column(String, nullable=False)
-#     description = Column(String, nullable=False)
-#     severity = Column(SqlEnum(RiskLevel), nullable=False)
-#     code_snippet = Column(String, nullable=True)
+    analysis_results: List["AnalysisResult"] = Relationship(back_populates="site")
 
-#     result = relationship("AnalysisResultDB", back_populates="findings")
+class UrlRequest(SQLModel):
+    """Pydantic model for URL-based requests."""
+    url: str
 
-# AnalysisResultDB.findings = relationship("AnalysisFindingDB", order_by=AnalysisFindingDB.id, back_populates="result")
-
-
-class SiteDB(Base):
-    __tablename__ = "sites"
-    url = Column(String, primary_key=True)
-    html = Column(String)
-
-    analysis_results = relationship("AnalysisResultDB", back_populates="site")
+class HtmlRequest(SQLModel):
+    """Pydantic model for HTML content-based requests."""
+    html: str

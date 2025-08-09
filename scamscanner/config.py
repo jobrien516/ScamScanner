@@ -1,9 +1,11 @@
 import os
 from dotenv import load_dotenv
+from pathlib import Path
 
 from pydantic import BaseModel
 
-load_dotenv(".env.local")
+ROOT_DIR = Path(__file__).parent.parent
+load_dotenv(f"{ROOT_DIR}/.env.local")
 
 
 class Settings(BaseModel):
@@ -13,3 +15,5 @@ class Settings(BaseModel):
 
 def get_settings() -> Settings:
     return Settings()
+
+settings = get_settings()

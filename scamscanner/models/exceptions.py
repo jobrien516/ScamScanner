@@ -1,2 +1,0 @@
-class WebsiteFetchError(Exception):
-    pass
