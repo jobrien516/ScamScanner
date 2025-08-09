@@ -1,4 +1,5 @@
 import React, { useState, useRef } from 'react';
+import { UploadIcon, BackIcon } from './Icons';
 
 interface ManualInputProps {
     onAnalyze: (html: string) => void;
@@ -6,19 +7,6 @@ interface ManualInputProps {
     url: string;
     onBack: () => void;
 }
-
-const UploadIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-2" viewBox="0 0 20 20" fill="currentColor">
-        <path fillRule="evenodd" d="M3 17a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zM6.293 6.707a1 1 0 010-1.414l3-3a1 1 0 011.414 0l3 3a1 1 0 01-1.414 1.414L11 5.414V13a1 1 0 11-2 0V5.414L7.707 6.707a1 1 0 01-1.414 0z" clipRule="evenodd" />
-    </svg>
-);
-
-const BackIcon = () => (
-    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
-        <path fillRule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clipRule="evenodd" />
-    </svg>
-);
-
 
 const ManualInput: React.FC<ManualInputProps> = ({ onAnalyze, error, url, onBack }) => {
     const [html, setHtml] = useState('');
