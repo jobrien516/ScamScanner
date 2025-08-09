@@ -1,19 +1,16 @@
 from google import genai
 from google.genai import types
 
-# import base64
-from models.constants import ANALYSIS_SCHEMA, ANALYSIS_PROMPT
-from config import settings
+from ..models.constants import ANALYSIS_SCHEMA, ANALYSIS_PROMPT
+from ..config import settings
 
-
-
-async def generate_analysis(html: str):
+async def generate_analysis(content: str, prompt: str = ANALYSIS_PROMPT):
     client = genai.Client(
         api_key=settings.GEMINI_KEY
     )
 
     model = "gemini-2.5-pro"
-    contents = types.Part(text=ANALYSIS_PROMPT + html)
+    contents = types.Part(text=prompt + content)
 
     generate_content_config = types.GenerateContentConfig(
         temperature=0,
@@ -29,8 +26,3 @@ async def generate_analysis(html: str):
         model=model, contents=contents, config=generate_content_config
     )
     return response.text
-
-
-# if __name__ == "__main__":
-#     resp = generate()
-#     print(resp)

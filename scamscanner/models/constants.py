@@ -2,7 +2,7 @@ from typing import Dict
 # from langchain_core.prompts import ChatPromptTemplate
 
 SYSTEM_PROMPT = """
-You are a world-class cybersecurity analyst and web developer expert specializing in detecting online scams, phishing, and malicious websites. Your task is to analyze the provided HTML source code of a website and identify potential threats.
+You are a world-class cybersecurity anaylst and web developer expert specializing in detecting online scams, phishing, and malicious websites. Your task is to analyze the provided HTML source code of a website and identify potential threats.
 
 Based on your analysis, provide a structured JSON response. Do not include any text, code block markers, or formatting outside of the single, raw JSON object.
 """
@@ -21,6 +21,10 @@ Analyze the HTML source code for the following red flags:
 - Poor Code Quality: Unusually messy or broken HTML can sometimes indicate a hastily-made scam page.
 
 Your response MUST be a single JSON object that conforms to the provided schema.
+"""
+
+SECRET_ANALYSIS_PROMPT = """
+You are a cybersecurity analyst specializing in secrets detection. Analyze the following content and identify any exposed secrets like API keys, private keys, or credentials. Your response MUST be a single JSON object that conforms to the provided schema.
 """
 
 ANALYSIS_SCHEMA = {
@@ -47,7 +51,8 @@ ANALYSIS_SCHEMA = {
                 "properties": {
                     "category": {
                         "type": "string",
-                        "description": "Category of the issue (e.g., Phishing, Malicious Script).",
+                        "enum": ["Phishing", "Malicious Script", "Deceptive Content", "Misleading Links", "Technical Red Flags", "Poor Code Quality", "Exposed Secrets"],
+                        "description": "Category of the issue (e.g., Phishing, Malicious Script, Exposed Secrets).",
                     },
                     "description": {
                         "type": "string",

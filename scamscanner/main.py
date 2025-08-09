@@ -2,7 +2,7 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from services.db import create_db_and_tables
+from services.db import create_db_and_tables, get_db_session
 from exceptions import WebsiteFetchError
 from app import app
 from services.website_fetcher import WebsiteFetcher
@@ -26,7 +26,8 @@ def read_root():
 
 async def main():
     fetcher = WebsiteFetcher("https://backgroundreport.live/score006")
-    await fetcher.download_site()
+    async with get_db_session() as session:
+        await fetcher.download_site(session)
 
 
 if __name__ == "__main__":
