@@ -4,9 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from loguru import logger
 
-from services.db import create_db_and_tables
-from api.endpoints import router
-from exceptions import WebsiteFetchError
+from .services.db import create_db_and_tables
+from .api.endpoints import router
+from .exceptions import WebsiteFetchError
 
 
 @asynccontextmanager
