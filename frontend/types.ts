@@ -11,6 +11,8 @@ export interface AnalysisFinding {
   description: string;
   severity: RiskLevel;
   codeSnippet?: string;
+  fileName?: string;
+  lineNumber?: number;
 }
 
 export interface AnalysisResult {
