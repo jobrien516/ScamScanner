@@ -23,7 +23,7 @@ const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => 
     };
 
     return (
-        <div className="bg-slate-800/50 p-6 sm:p-8 rounded-xl shadow-2xl border border-slate-700">
+        <div className="bg-slate-800/50 p-6 sm:p-8 rounded-xl shadow-2xl border border-slate-700 max-w-3xl mx-auto">
             <form onSubmit={handleSubmit}>
                 <label htmlFor="url-input" className="block text-lg font-medium text-slate-300 mb-2">
                     Enter Website URL

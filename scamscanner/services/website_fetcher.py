@@ -8,7 +8,6 @@ from sqlmodel import select
 from ..models.schemas import Site, SubPage
 from ..exceptions import WebsiteFetchError
 from ..models.constants import DEMO_SITES
-from .db import get_db_session
 
 
 class WebsiteFetcher:

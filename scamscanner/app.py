@@ -1,12 +1,10 @@
-from fastapi import FastAPI, Request
-from fastapi.responses import JSONResponse
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from loguru import logger
 
 from .services.db import create_db_and_tables
 from .api.endpoints import router
-from .exceptions import WebsiteFetchError
 
 
 @asynccontextmanager

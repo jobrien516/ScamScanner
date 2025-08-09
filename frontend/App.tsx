@@ -7,6 +7,7 @@ import UrlInput from '@/components/UrlInput';
 import ManualInput from '@/components/ManualInput';
 import AnalysisResultDisplay from '@/components/AnalysisResult';
 import Spinner from '@/components/Spinner';
+import { DEMO_SITES } from '@/constants';
 
 const App: React.FC = () => {
   const [view, setView] = useState<ViewState>(ViewState.START);
@@ -27,22 +28,34 @@ const App: React.FC = () => {
     setCurrentUrl('');
   }, []);
 
-    const handleUrlSubmit = useCallback(async (url: string) => {
-        setCurrentUrl(url);
-        setView(ViewState.LOADING);
-        setError(null);
-        setAnalysisResult(null);
+  const handleUrlSubmit = useCallback(async (url: string) => {
+    setCurrentUrl(url);
+    setView(ViewState.LOADING);
+    setError(null);
+    setAnalysisResult(null);
 
-        try {
-            const result = await analyzeUrl(url);
-            setAnalysisResult(result);
-            setView(ViewState.RESULT);
-        } catch (err) {
-            const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-            setError(errorMessage);
-            setView(ViewState.START);
-        }
-    }, []);
+    try {
+      // Normalize URL to check for demo sites
+      const normalizedUrl = url.trim().replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
+      let result;
+
+      if (DEMO_SITES[normalizedUrl]) {
+        // If it's a demo site, analyze its hardcoded HTML
+        const demoHtml = DEMO_SITES[normalizedUrl];
+        result = await analyzeHtml(demoHtml);
+      } else {
+        // Otherwise, call the standard URL analysis endpoint
+        result = await analyzeUrl(url);
+      }
+      
+      setAnalysisResult(result);
+      setView(ViewState.RESULT);
+    } catch (err) {
+        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+        setError(errorMessage);
+        setView(ViewState.START);
+    }
+  }, []);
 
   const handleManualSubmit = useCallback(async (html: string) => {
     setView(ViewState.LOADING);

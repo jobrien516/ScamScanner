@@ -1,13 +1,8 @@
 import re
-from pydantic import BaseModel
-from loguru import logger
-import os
-from google import genai
-from dotenv import load_dotenv
 from loguru import logger
 from .llm import generate_analysis
 
-from ..models.constants import SYSTEM_PROMPT, SECRET_ANALYSIS_PROMPT
+from ..models.constants import SECRET_ANALYSIS_PROMPT
 
 
 def clean_markdown_code_blocks(markdown_text: str) -> str:

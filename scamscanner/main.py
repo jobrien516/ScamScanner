@@ -2,10 +2,8 @@ from fastapi import Request
 from fastapi.responses import JSONResponse
 from loguru import logger
 
-from services.db import create_db_and_tables, get_db_session
 from exceptions import WebsiteFetchError
 from app import app
-from services.website_fetcher import WebsiteFetcher
 
 
 @app.exception_handler(WebsiteFetchError)
