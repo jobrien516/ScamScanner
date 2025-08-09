@@ -6,6 +6,7 @@ from enum import Enum as PyEnum
 
 class RiskLevel(str, PyEnum):
     """Enumeration for risk levels."""
+
     LOW = "Low"
     MEDIUM = "Medium"
     HIGH = "High"
@@ -15,14 +16,18 @@ class RiskLevel(str, PyEnum):
 
 class AnalysisFinding(SQLModel):
     """Represents a single finding in a website analysis. Not a table model."""
+
     category: str
     description: str
     severity: RiskLevel
     codeSnippet: Optional[str] = None
+    fileName: Optional[str] = None
+    lineNumber: Optional[int] = None
 
 
 class AnalysisResult(SQLModel, table=True):
     """Represents an analysis result as a database table."""
+
     id: Optional[int] = Field(default=None, primary_key=True)
     site_url: str = Field(index=True)
     overallRisk: RiskLevel
@@ -37,6 +42,7 @@ class AnalysisResult(SQLModel, table=True):
 
 class SubPage(SQLModel, table=True):
     """Represents a sub-page of a website."""
+
     id: Optional[int] = Field(default=None, primary_key=True)
     url: str = Field(unique=True, index=True)
     content: str
@@ -46,21 +52,25 @@ class SubPage(SQLModel, table=True):
 
 class Site(SQLModel, table=True):
     """Represents a website to be scanned."""
+
     id: Optional[int] = Field(default=None, primary_key=True)
     url: str = Field(unique=True, index=True)
-    
+
     sub_pages: List["SubPage"] = Relationship(back_populates="site")
     analysis_results: List["AnalysisResult"] = Relationship(back_populates="site")
 
 
 class UrlRequest(SQLModel):
     """Pydantic model for URL-based requests."""
+
     url: str
 
 
 class HtmlRequest(SQLModel):
     """Pydantic model for HTML content-based requests."""
+
     html: str
+
 
 # Resolve forward references to help type checkers
 AnalysisResult.model_rebuild()

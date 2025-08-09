@@ -8,23 +8,29 @@ Based on your analysis, provide a structured JSON response. Do not include any t
 """
 
 ANALYSIS_PROMPT = """
-You are a world-class cybersecurity analyst and web developer expert specializing in detecting online scams, phishing, and malicious websites. Your task is to analyze the provided HTML source code of a website and identify potential threats.
+You are a world-class cybersecurity analyst and web developer expert specializing in detecting online scams, phishing, and malicious websites. Your task is to analyze the provided source code of a website and identify potential threats.
 
 Based on your analysis, provide a structured JSON response. Do not include any text, code block markers, or formatting outside of the single, raw JSON object.
 
-Analyze the HTML source code for the following red flags:
-- Phishing Techniques: Forms asking for sensitive information (credentials, credit card details) without proper security context, or designed to mimic a legitimate service.
-- Malicious Scripts: Obfuscated JavaScript, suspicious external scripts, or code that performs unexpected actions (like crypto mining).
-- Deceptive Content: Text that creates false urgency, scare tactics, fake testimonials, or promises that are too good to be true.
-- Misleading Links & Redirects: Links where the anchor text is deceptive, or hidden redirects to malicious sites.
-- Technical Red Flags: Use of iframes to load suspicious content, lack of a valid privacy policy or contact information, typosquatting hints in domain name if visible in code.
-- Poor Code Quality: Unusually messy or broken HTML can sometimes indicate a hastily-made scam page.
+Analyze the source code for the following red flags:
+- Phishing Techniques: Forms asking for sensitive information without proper security.
+- Malicious Scripts: Obfuscated JavaScript, suspicious external scripts, or crypto mining.
+- Deceptive Content: False urgency, scare tactics, fake testimonials, or promises that are too good to be true.
+- Misleading Links & Redirects: Deceptive anchor text or hidden redirects.
+- Technical Red Flags: Suspicious iframes, lack of privacy policy, typosquatting hints.
+- Poor Code Quality: Unusually messy or broken code.
+
+For each finding that includes a `codeSnippet`, you MUST also provide the `fileName` (which is the URL of the sub-page) and the approximate `lineNumber` where the snippet was found.
 
 Your response MUST be a single JSON object that conforms to the provided schema.
 """
 
 SECRET_ANALYSIS_PROMPT = """
-You are a cybersecurity analyst specializing in secrets detection. Analyze the following content and identify any exposed secrets like API keys, private keys, or credentials. Your response MUST be a single JSON object that conforms to the provided schema.
+You are a cybersecurity analyst specializing in secrets detection. Analyze the following content and identify any exposed secrets like API keys, private keys, or credentials.
+
+For each finding that includes a `codeSnippet`, you MUST also provide the `fileName` (which is the URL of the sub-page) and the approximate `lineNumber` where the snippet was found.
+
+Your response MUST be a single JSON object that conforms to the provided schema.
 """
 
 ANALYSIS_SCHEMA = {
@@ -51,7 +57,15 @@ ANALYSIS_SCHEMA = {
                 "properties": {
                     "category": {
                         "type": "string",
-                        "enum": ["Phishing", "Malicious Script", "Deceptive Content", "Misleading Links", "Technical Red Flags", "Poor Code Quality", "Exposed Secrets"],
+                        "enum": [
+                            "Phishing",
+                            "Malicious Script",
+                            "Deceptive Content",
+                            "Misleading Links",
+                            "Technical Red Flags",
+                            "Poor Code Quality",
+                            "Exposed Secrets",
+                        ],
                         "description": "Category of the issue (e.g., Phishing, Malicious Script, Exposed Secrets).",
                     },
                     "description": {
@@ -66,6 +80,14 @@ ANALYSIS_SCHEMA = {
                     "codeSnippet": {
                         "type": "string",
                         "description": "A relevant snippet of the suspicious code, if applicable.",
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "The source URL of the file where the code snippet was found.",
+                    },
+                    "lineNumber": {
+                        "type": "integer",
+                        "description": "The approximate line number of the code snippet in the source file.",
                     },
                 },
                 "required": ["category", "description", "severity"],

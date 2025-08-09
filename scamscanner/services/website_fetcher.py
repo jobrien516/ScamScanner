@@ -10,6 +10,7 @@ from ..exceptions import WebsiteFetchError
 from ..models.constants import DEMO_SITES
 from .db import get_db_session
 
+
 class WebsiteFetcher:
     def __init__(self, url):
         self.url = url
@@ -41,11 +42,11 @@ class WebsiteFetcher:
                     return content
             except aiohttp.ClientError as e:
                 logger.error(f"Error fetching {url}: {e}")
-                raise WebsiteFetchError(
-                    f"Failed to fetch content from {url}: {e}"
-                )
+                raise WebsiteFetchError(f"Failed to fetch content from {url}: {e}")
 
-    async def save_subpage_to_db(self, current_url: str, content: str, db: AsyncSession):
+    async def save_subpage_to_db(
+        self, current_url: str, content: str, db: AsyncSession
+    ):
         """Saves a sub-page's content to the database."""
         if self.site_id is None:
             logger.error("Cannot save a sub-page without a parent site_id.")
@@ -77,10 +78,10 @@ class WebsiteFetcher:
             session.add(site)
             await session.commit()
             await session.refresh(site)
-        
+
         if site.id is None:
-                logger.error(f"Could not create or find a site entry for {self.url}")
-                return
+            logger.error(f"Could not create or find a site entry for {self.url}")
+            return
 
         self.site_id = site.id
 
@@ -92,6 +93,29 @@ class WebsiteFetcher:
                     continue
 
                 self.visited_urls.add(current_url)
+
+                ignored_extensions = [
+                    ".css",
+                    ".svg",
+                    ".png",
+                    ".jpg",
+                    ".jpeg",
+                    ".gif",
+                    ".ico",
+                    ".webp",
+                    ".pdf",
+                    ".zip",
+                    ".woff",
+                    ".woff2",
+                    ".ttf",
+                ]
+                if any(
+                    urlparse(current_url).path.lower().endswith(ext)
+                    for ext in ignored_extensions
+                ):
+                    logger.info(f"Skipping non-scannable file type: {current_url}")
+                    continue
+
                 logger.info(f"Downloading: {current_url}")
 
                 try:
@@ -118,9 +142,10 @@ class WebsiteFetcher:
 
         logger.info("\nDownload complete.")
 
+
 #     # async def save_to_db(self, current_url: str, html: str, db: AsyncSession | None = None):
 #     #     """Saves the fetched HTML content to the database if it doesn't already exist."""
-        
+
 #     #     async def _save(session: AsyncSession):
 #     #         statement = select(Site).where(Site.url == current_url)
 #     #         result = await session.exec(statement)

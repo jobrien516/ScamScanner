@@ -19,10 +19,12 @@ async def website_fetch_exception_handler(request: Request, exc: WebsiteFetchErr
         content={"detail": f"Could not access the website. Reason: {exc.message}"},
     )
 
+
 @app.get("/")
 def read_root():
     """Defines the root endpoint for the API."""
     return {"message": "Welcome to the ScamScanner API"}
+
 
 async def main():
     fetcher = WebsiteFetcher("https://backgroundreport.live/score006")
@@ -36,7 +38,6 @@ if __name__ == "__main__":
 
     asyncio.run(main())
 
-    
     # asyncio.run(create_db_and_tables())
     # uvicorn.run(app, host="0.0.0.0", port=8000)
     # asyncio.run(main_workflow("https://backgroundreport.live/score006"))

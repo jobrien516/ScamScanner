@@ -4,10 +4,9 @@ from google.genai import types
 from ..models.constants import ANALYSIS_SCHEMA, ANALYSIS_PROMPT
 from ..config import settings
 
+
 async def generate_analysis(content: str, prompt: str = ANALYSIS_PROMPT):
-    client = genai.Client(
-        api_key=settings.GEMINI_KEY
-    )
+    client = genai.Client(api_key=settings.GEMINI_KEY)
 
     model = "gemini-2.5-pro"
     contents = types.Part(text=prompt + content)

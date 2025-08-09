@@ -22,7 +22,6 @@ def clean_markdown_code_blocks(markdown_text: str) -> str:
 
 
 class WebsiteAnalyzer:
-
     async def analyze_content(self, content: str) -> str:
         """
         Analyzes the provided text content using the generative AI model.
@@ -41,8 +40,12 @@ class WebsiteAnalyzer:
                 logger.info("Successfully received analysis from AI model.")
                 return response
             else:
-                logger.error(f"AI model returned an empty response. Feedback: {response}")
-                raise ValueError("AI model returned no content, possibly due to safety settings or other issues.")
+                logger.error(
+                    f"AI model returned an empty response. Feedback: {response}"
+                )
+                raise ValueError(
+                    "AI model returned no content, possibly due to safety settings or other issues."
+                )
 
         except Exception as e:
             logger.error(f"Error during website analysis: {e}")
@@ -54,12 +57,16 @@ class WebsiteAnalyzer:
         """
         try:
             logger.info("Starting secret analysis.")
-            response = await generate_analysis(content=content, prompt=SECRET_ANALYSIS_PROMPT)
+            response = await generate_analysis(
+                content=content, prompt=SECRET_ANALYSIS_PROMPT
+            )
             if response:
                 logger.info("Successfully received secret analysis from AI model.")
                 return response
             else:
-                logger.error(f"AI model returned an empty response for secrets scan. Feedback: {response}")
+                logger.error(
+                    f"AI model returned an empty response for secrets scan. Feedback: {response}"
+                )
                 raise ValueError("AI model returned no content for secrets scan.")
         except Exception as e:
             logger.error(f"Error during secret analysis: {e}")
