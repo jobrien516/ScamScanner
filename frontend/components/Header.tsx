@@ -1,4 +1,5 @@
 import React from 'react';
+import { pageContent } from '@/constants';
 
 const ShieldIcon = () => (
     <svg xmlns="http://www.w3.org/2000/svg" className="h-10 w-10 sm:h-12 sm:w-12 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
@@ -12,11 +13,11 @@ const Header: React.FC = () => {
             <div className="flex items-center justify-center gap-4">
                 <ShieldIcon />
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-100 tracking-tight">
-                    ScamScanner
+                    {pageContent.header.title}
                 </h1>
             </div>
             <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
-                Enter a website URL to analyze its source code for potential phishing, scams, and malicious activity using AI.
+                {pageContent.header.subtitle}
             </p>
         </header>
     );

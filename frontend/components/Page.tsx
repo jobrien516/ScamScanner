@@ -9,7 +9,7 @@ interface PageProps {
 const Page: React.FC<PageProps> = ({ children }) => {
   return (
     <div className="min-h-screen bg-slate-900 flex flex-col p-4 sm:p-6 lg:p-8">
-      <div className="w-full max-w-4xl mx-auto flex flex-col flex-grow">
+      <div className="w-full max-w-8xl mx-auto flex flex-col flex-grow">
         <header>
           <Navbar />
         </header>
