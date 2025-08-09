@@ -26,18 +26,18 @@ def read_root():
     return {"message": "Welcome to the ScamScanner API"}
 
 
-async def main():
-    fetcher = WebsiteFetcher("https://backgroundreport.live/score006")
-    async with get_db_session() as session:
-        await fetcher.download_site(session)
+# async def main():
+#     fetcher = WebsiteFetcher("https://backgroundreport.live/score006")
+#     async with get_db_session() as session:
+#         await fetcher.download_site(session)
 
 
-if __name__ == "__main__":
-    import asyncio
-    # import uvicorn
+# if __name__ == "__main__":
+#     import asyncio
+#     import uvicorn
 
-    asyncio.run(main())
+#     asyncio.run(main())
 
-    # asyncio.run(create_db_and_tables())
-    # uvicorn.run(app, host="0.0.0.0", port=8000)
-    # asyncio.run(main_workflow("https://backgroundreport.live/score006"))
+#     asyncio.run(create_db_and_tables())
+#     uvicorn.run(app, host="0.0.0.0", port=8000)
+#     asyncio.run(main_workflow("https://backgroundreport.live/score006"))
