@@ -15,36 +15,36 @@ const Navbar: React.FC = () => {
                 <span className="text-xl font-bold text-slate-100 tracking-tight">ScamScanner</span>
             </NavLink>
             <div className="flex items-center gap-2">
-                <NavLink 
-                    to="/" 
+                <NavLink
+                    to="/"
                     className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
                     style={({ isActive }) => isActive ? activeLinkStyle : undefined}
                 >
                     Home
                 </NavLink>
-                <NavLink 
-                    to="/scanner" 
+                <NavLink
+                    to="/scanner"
                     className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
                     style={({ isActive }) => isActive ? activeLinkStyle : undefined}
                 >
                     Scanner
                 </NavLink>
-                <NavLink 
-                    to="/history" 
+                <NavLink
+                    to="/history"
                     className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
                     style={({ isActive }) => isActive ? activeLinkStyle : undefined}
                 >
                     History
                 </NavLink>
-                <NavLink 
-                    to="/mission" 
+                <NavLink
+                    to="/mission"
                     className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
                     style={({ isActive }) => isActive ? activeLinkStyle : undefined}
                 >
                     Our Mission
                 </NavLink>
-                <NavLink 
-                    to="/support" 
+                <NavLink
+                    to="/support"
                     className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
                     style={({ isActive }) => isActive ? activeLinkStyle : undefined}
                 >

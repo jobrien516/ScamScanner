@@ -13,15 +13,16 @@ const LandingPage: React.FC = () => {
 
   return (
     <div className="py-8 animate-fade-in">
-      {/* Hero Section */}
+      {/* Before the Button */}
       <div className="max-w-4xl mx-auto text-center">
         <Card title={pageContent.landing.title}>
           <p className="mt-6 text-lg text-slate-400 max-w-3xl mx-auto">
             {pageContent.landing.subtitle}
           </p>
         </Card>
+        {/* Button */}
         <div className="mt-4">
-          <button 
+          <button
             onClick={handleStartScanning}
             className="bg-blue-600 hover:bg-blue-700 text-white font-bold p-4 rounded-lg transition duration-200 text-lg shadow-lg hover:shadow-blue-500/30"
           >
@@ -29,9 +30,33 @@ const LandingPage: React.FC = () => {
           </button>
         </div>
       </div>
+      {/* After the Button */}
       <div className="grid lg:grid-cols-2 items-start">
+
+        {/* Purpose Section */}
+        <Card title={pageContent.landing.purpose.title}>
+          <div className="grid md:grid-cols-2 gap-8 text-left">
+            {/* IS */}
+            <div className="flex flex-col">
+              <div className="inline-block p-3 bg-slate-700/50 rounded-full">
+                <CheckIcon />
+              </div>
+              <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.landing.purpose.isFor.title}</h3>
+              <p className="text-slate-300 mt-2">{pageContent.landing.purpose.isFor.description}</p>
+            </div>
+            {/* IS NOT */}
+            <div className="flex flex-col">
+              <div className="inline-block p-3 bg-slate-700/50 rounded-full">
+                <XIcon />
+              </div>
+              <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.landing.purpose.isNotFor.title}</h3>
+              <p className="text-slate-300 mt-2">{pageContent.landing.purpose.isNotFor.description}</p>
+            </div>
+          </div>
+        </Card>
+
+        {/* Web Safety Section */}
         <Card title={pageContent.landing.webSafety.title} className="h-full">
-          {/* Web Safety Section */}
           <ul className="space-y-4 text-left">
             {pageContent.landing.webSafety.tips.map((tip, index) => (
               <li key={index} className="flex items-start gap-4">
@@ -47,40 +72,41 @@ const LandingPage: React.FC = () => {
           </ul>
         </Card>
 
-        <Card className="h-full text-center">
-          {/* Data Privacy Section */}
+        {/* Data Privacy Section */}
+        <Card className="h-full text-left">
           <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
-              <LockIcon />
+            <LockIcon />
           </div>
-          <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.landing.dataPrivacy.title}</h2>
+          <h2 className="text-2xl font-bold text-slate-100 mt-4"><LockIcon />{pageContent.landing.dataPrivacy.title}</h2>
           <p className="text-slate-300 mt-4">{pageContent.landing.dataPrivacy.description}</p>
         </Card>
+
+        {/* Technology Section */}
         <Card className="h-full text-center">
-          {/* Technology Section */}
           <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
-              <CodeIcon />
+            <CodeIcon />
           </div>
           <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.landing.technology.title}</h2>
           <p className="text-slate-300 mt-4">{pageContent.landing.technology.description}</p>
         </Card>
 
+        {/* Disclaimer Section */}
         <Card className="h-full text-center">
-          {/* Disclaimer Section */}
-            <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
-                <AlertIcon />
-            </div>
-            <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.landing.disclaimer.title}</h2>
-            <p className="text-slate-300 mt-4">{pageContent.landing.disclaimer.description}</p>
+          <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
+            <AlertIcon />
+          </div>
+          <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.landing.disclaimer.title}</h2>
+          <p className="text-slate-300 mt-4">{pageContent.landing.disclaimer.description}</p>
         </Card>
-      
+
+        {/* Resources Section */}
         <Card title={pageContent.landing.resources.title}>
-          {/* Resources Section */}
           <div className="space-y-4">
             {pageContent.landing.resources.links.map((resource, index) => (
-              <a 
-                key={index} 
-                href={resource.url} 
-                target="_blank" 
+              <a
+                key={index}
+                href={resource.url}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-4 p-4 bg-slate-800 rounded-lg border border-slate-700 hover:bg-slate-700/50 transition-colors"
               >
@@ -95,27 +121,7 @@ const LandingPage: React.FC = () => {
             ))}
           </div>
         </Card>
-      <Card title={pageContent.landing.purpose.title}>
-        {/* Purpose Section */}
-        <div className="grid md:grid-cols-2 gap-8 text-center">
-            {/* What this app IS */}
-          <div className="flex flex-col items-center">
-            <div className="inline-block p-3 bg-slate-700/50 rounded-full">
-                <CheckIcon />
-            </div>
-            <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.landing.purpose.isFor.title}</h3>
-            <p className="text-slate-300 mt-2">{pageContent.landing.purpose.isFor.description}</p>
-          </div>
-          {/* What this app IS NOT */}
-          <div className="flex flex-col items-center">
-              <div className="inline-block p-3 bg-slate-700/50 rounded-full">
-                  <XIcon />
-              </div>
-              <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.landing.purpose.isNotFor.title}</h3>
-              <p className="text-slate-300 mt-2">{pageContent.landing.purpose.isNotFor.description}</p>
-          </div>
-        </div>
-      </Card>
+
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
 export enum RiskLevel {
-  Low = 'Low',
-  Medium = 'Medium',
-  High = 'High',
-  VeryHigh = 'Very High',
-  Unknown = 'Unknown',
+  Low = "Low",
+  Medium = "Medium",
+  High = "High",
+  VeryHigh = "Very High",
+  Unknown = "Unknown",
 }
 
 export interface AnalysisFinding {
@@ -28,7 +28,7 @@ export interface AnalysisResult {
   summary: string;
   detailedAnalysis: AnalysisFinding[];
   domainInfo?: DomainInfo;
-  id?: number; 
+  id?: number;
   site_url?: string;
   last_analyzed_at?: string;
 }
@@ -39,8 +39,8 @@ export interface HistoryAnalysisResult extends AnalysisResult {
 }
 
 export enum ViewState {
-    START = 'START',
-    MANUAL_INPUT = 'MANUAL_INPUT',
-    LOADING = 'LOADING',
-    RESULT = 'RESULT',
+  START = "START",
+  MANUAL_INPUT = "MANUAL_INPUT",
+  LOADING = "LOADING",
+  RESULT = "RESULT",
 }

@@ -62,7 +62,7 @@ async def _save_analysis_to_db(db: AsyncSession, site: Site, analysis_data: dict
     return new_record
 
 
-async def run_analysis(url: str, job_id: str, manager: ConnectionManager, content: str | None = None):
+async def run_analysis(url: str, job_id: str, manager: ConnectionManager, content: str | None = None, scan_depth: str = "deep"):
     """
     The main analysis workflow run as a background task.
     """
@@ -80,16 +80,21 @@ async def run_analysis(url: str, job_id: str, manager: ConnectionManager, conten
                 aggregated_content = content
             else:
                 fetcher = WebsiteFetcher(url=url, job_id=job_id, manager=manager)
-                await fetcher.download_site(session=db)
-                
-                statement = select(Site).options(selectinload(Site.sub_pages)).where(Site.url == url)  # type: ignore
+                if scan_depth == "deep":
+                    await fetcher.download_site(session=db)
+                else:
+                    await manager.send_update(f"Fetching content from {url}...", job_id)
+                    aggregated_content = await fetcher.fetch_url_content(url)
+
+                statement = select(Site).options(selectinload(Site.sub_pages)).where(Site.url == url) # type: ignore
                 result = await db.exec(statement)
                 site = result.first()
-                if not site:
+                if not site and scan_depth == "deep":
                     raise Exception(f"Site {url} not found after download process.")
 
-                aggregated_content = " ".join([sub_page.content for sub_page in site.sub_pages])
-                
+                if site and scan_depth == "deep":
+                    aggregated_content = " ".join([sub_page.content for sub_page in site.sub_pages])
+
                 await manager.send_update("Using WHOIS to find out who owns this jawn...", job_id)
                 await asyncio.sleep(0)
                 try:
@@ -98,7 +103,7 @@ async def run_analysis(url: str, job_id: str, manager: ConnectionManager, conten
                     logger.warning(f"WHOIS lookup for {url} timed out.")
                     await manager.send_update("WHOIS lookup timed out, continuing analysis...", job_id)
                     domain_info = None
-            
+
             if not site:
                 site_statement = select(Site).where(Site.url == url)
                 res = await db.exec(site_statement)
@@ -112,17 +117,17 @@ async def run_analysis(url: str, job_id: str, manager: ConnectionManager, conten
             await manager.send_update("Scanning for exposed secrets big and small...", job_id)
             await asyncio.sleep(0)
             secret_analysis_str = await asyncio.to_thread(analyzer.analyze_for_secrets, aggregated_content)
-            
+
             await manager.send_update("Analyzing for scammy looking stuff...", job_id)
             await asyncio.sleep(0)
             general_analysis_str = await asyncio.to_thread(analyzer.analyze_content, aggregated_content)
-            
+
             await manager.send_update("Compiling final report...", job_id)
             await asyncio.sleep(0)
 
             analysis_data = json.loads(general_analysis_str.strip().removeprefix('```json').removesuffix('```'))
             secret_analysis = json.loads(secret_analysis_str.strip().removeprefix('```json').removesuffix('```'))
-            
+
             analysis_data["detailedAnalysis"].extend(secret_analysis.get("detailedAnalysis", []))
             analysis_data["domainInfo"] = domain_info
 
@@ -141,7 +146,7 @@ async def run_analysis(url: str, job_id: str, manager: ConnectionManager, conten
                 })
 
             final_result_model = await _save_analysis_to_db(db=db, site=site, analysis_data=analysis_data)
-            
+
             await manager.send_final_result(json.loads(final_result_model.model_dump_json()), job_id)
 
         except Exception as e:

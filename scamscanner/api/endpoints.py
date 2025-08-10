@@ -32,7 +32,7 @@ async def analyze_url(request: UrlRequest, background_tasks: BackgroundTasks):
     Accepts a URL for analysis, starts a background task, and returns a job ID.
     """
     job_id = str(uuid.uuid4())
-    background_tasks.add_task(run_analysis, request.url, job_id, manager)
+    background_tasks.add_task(run_analysis, request.url, job_id, manager, scan_depth=str(request.scan_depth))
     return {"job_id": job_id}
 
 @router.post("/analyze-html")

@@ -1,7 +1,7 @@
 import React from 'react';
 
 interface RiskScoreGaugeProps {
-  score: number;
+    score: number;
 }
 
 const RiskScoreGauge: React.FC<RiskScoreGaugeProps> = ({ score }) => {

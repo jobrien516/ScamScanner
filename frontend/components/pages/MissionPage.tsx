@@ -13,6 +13,7 @@ const MissionPage: React.FC = () => {
         </div>
       </Card>
     </div>
+
   );
 };
 

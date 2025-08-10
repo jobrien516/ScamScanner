@@ -28,7 +28,7 @@ const AnalysisResultDisplay: React.FC<AnalysisResultProps> = ({ result, error, o
     }
 
     if (!result) return null;
-    
+
     const detailedAnalysis = result.detailedAnalysis || [];
 
     const getRiskMessage = (riskLevel: RiskLevel): string => {
@@ -102,13 +102,13 @@ const AnalysisResultDisplay: React.FC<AnalysisResultProps> = ({ result, error, o
 
     return (
         <div className="space-y-8 animate-fade-in">
-             {url && (
+            {url && (
                 <div className="pb-4 border-b border-slate-700 text-center">
                     <p className="text-sm text-slate-400">Analysis for:</p>
                     <h2 className="text-xl font-semibold text-slate-200 break-all">{url}</h2>
                 </div>
             )}
-            
+
             <div className="grid lg:grid-cols-2 gap-8 items-start">
                 <div>
                     <h3 className="text-xl font-semibold text-slate-200 mb-2">Risk Assessment</h3>

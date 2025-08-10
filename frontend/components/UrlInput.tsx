@@ -2,18 +2,19 @@ import React, { useState } from 'react';
 import { SearchIcon } from './Icons';
 
 type UrlInputProps = {
-  onScan: (url: string) => void | Promise<void>;
-  onUploadClick: () => void;
-  error?: string | null;
+    onScan: (url: string, scanDepth: string) => void | Promise<void>;
+    onUploadClick: () => void;
+    error?: string | null;
 };
 
 const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => {
     const [url, setUrl] = useState('');
+    const [scanDepth, setScanDepth] = useState('deep');
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (url.trim()) {
-            onScan(url);
+            onScan(url, scanDepth);
         }
     };
 
@@ -32,6 +33,14 @@ const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => 
                         placeholder="e.g., demo-scam.com"
                         className="flex-grow bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
                     />
+                    <select
+                        value={scanDepth}
+                        onChange={(e) => setScanDepth(e.target.value)}
+                        className="bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
+                    >
+                        <option value="deep">Deep Scan</option>
+                        <option value="soft">Soft Scan</option>
+                    </select>
                     <button
                         type="submit"
                         disabled={!url.trim()}

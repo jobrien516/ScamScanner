@@ -71,6 +71,7 @@ class UrlRequest(SQLModel):
     """Pydantic model for URL-based requests."""
 
     url: str
+    scan_depth: Optional[str] = "deep"
 
 
 class HtmlRequest(SQLModel):

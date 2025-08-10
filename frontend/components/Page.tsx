@@ -13,11 +13,11 @@ const Page: React.FC<PageProps> = ({ children }) => {
         <header>
           <Navbar />
         </header>
-        
+
         <main className="mt-10 flex-grow">
           {children}
         </main>
-        
+
         <Footer />
       </div>
     </div>

@@ -14,8 +14,8 @@ const WebSocketProgressLog: React.FC<WebSocketProgressLogProps> = ({ messages })
   }, [messages]);
 
   return (
-    <div 
-      ref={logContainerRef} 
+    <div
+      ref={logContainerRef}
       className="bg-slate-900 rounded-lg p-4 h-48 overflow-y-auto font-mono text-sm text-slate-400 space-y-2"
     >
       {messages.map((msg, i) => (

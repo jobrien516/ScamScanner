@@ -1,79 +1,94 @@
-import { Type } from '@google/genai';
+import { Type } from "@google/genai";
 
-export const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+export const BACKEND_API_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export const pageContent = {
   header: {
     title: "ScamScanner",
-    subtitle: "Enter a website URL to analyze its source code for potential phishing, scams, and malicious activity using AI.",
+    subtitle:
+      "Enter a website URL to analyze its source code for potential phishing, scams, and malicious activity using AI.",
   },
   footer: {
-    poweredBy: "Powered by Google Gemini and an Over-Caffeinated, Under-Rested Developer.",
+    poweredBy:
+      "Powered by Google Gemini and an Over-Caffeinated, Under-Rested Developer.",
     copyright: "© 2025 AI Scam Site Scanner. For educational purposes only.",
   },
   landing: {
     title: "Empowering Your Digital Safety",
-    subtitle: "ScamScanner uses the power of AI to analyze website source code, helping you identify potential scams, phishing attempts, and malicious scripts before they can cause harm.",
-    ctaButton: "Start Scanning Now",
+    subtitle:
+      "ScamScanner uses the power of AI to analyze website source code, helping you identify potential scams, phishing attempts, and malicious scripts before they can cause harm.",
+    ctaButton: "Get to the Scanning",
     webSafety: {
       title: "Stay Safe Online",
       tips: [
         {
           title: "Verify URLs",
-          description: "Always double-check the URL for spelling errors or unusual domain names before entering sensitive information."
+          description:
+            "Always double-check the URL for spelling errors or unusual domain names before entering sensitive information.",
         },
         {
           title: "Beware of Urgency",
-          description: "Scammers often create a false sense of urgency to pressure you into making mistakes. Take your time."
+          description:
+            "Scammers often create a false sense of urgency to pressure you into making mistakes. Take your time.",
         },
         {
           title: "Look for HTTPS",
-          description: "Ensure the website uses a secure connection (https://) before providing any personal data."
-        }
-      ]
+          description:
+            "Ensure the website uses a secure connection (https://) before providing any personal data. The s in https stands for secure.",
+        },
+      ],
     },
     dataPrivacy: {
       title: "Your Privacy Matters",
-      description: "ScamScanner is designed with your privacy in mind. We do not save, store, or share the source code of the websites you scan. The content is sent for analysis and then immediately discarded. We cache the analysis results for 24 hours for your convenience and our wallet. Your scan history only contains the analysis results, not the original source data."
+      description:
+        "ScamScanner is designed with your privacy in mind. We do not save, store, or share the source code of the websites you scan. The content is sent for analysis and then immediately discarded. We cache the analysis results for 24 hours for your convenience and our wallet. Your scan history only contains the analysis results, not the original source data.",
     },
     technology: {
-        title: "Technology We Use",
-        description: "This application is a full-stack project built with a modern technology stack. The backend is powered by Python and FastAPI, handling web crawling and asynchronous tasks. The frontend is a responsive single-page application built with React and TypeScript, styled with Tailwind CSS."
+      title: "Technology We Use",
+      description:
+        "This application is a full-stack project built with a modern technology stack. The backend is powered by Python and FastAPI, handling web crawling and asynchronous tasks. The frontend is a responsive single-page application built with React and TypeScript, styled with Tailwind CSS. The AI model is powered by Google's Gemini 2.5 Pro, a cutting-edge language model that can understand and generate natural language.",
     },
     disclaimer: {
-        title: "Disclaimer",
-        description: "ScamScanner is an educational tool and is not a substitute for a comprehensive antivirus or security suite. While it is designed to identify common threats, it may not catch every malicious site. Always exercise caution and use your best judgment when Browse online."
+      title: "Disclaimer",
+      description:
+        "ScamScanner is a tool and is not a substitute for a comprehensive antivirus or security suite. While it is designed to identify common threats, it may not catch every malicious site. Always exercise caution and use your best judgment when Browse online.",
     },
     purpose: {
-        title: "An Educational Tool for a Safer Web",
-        isFor: {
-            title: "What This App Is",
-            description: "ScamScanner is an educational tool designed to demonstrate how AI can be used to detect potential online threats. It serves as a powerful first-pass-filter to help you spot common red flags in a website's code."
-        },
-        isNotFor: {
-            title: "What This App Isn't",
-            description: "This tool is not a replacement for a comprehensive antivirus or internet security suite. It cannot guarantee the detection of all threats and should be used as one of many tools in your online safety toolkit."
-        }
+      title: `First things first, "What is it?"`,
+      isFor: {
+        title: "What This App Is",
+        description:
+          "ScamScanner is an educational tool designed to demonstrate how AI can be used to detect potential online threats. It serves as a powerful first-pass-filter to help you spot common red flags in a website's code.",
+      },
+      isNotFor: {
+        title: "What This App Isn't",
+        description:
+          "This tool is not a replacement for a comprehensive antivirus or internet security suite. It cannot guarantee the detection of all threats and should be used as one of many tools in your online safety toolkit.",
+      },
     },
     resources: {
       title: "Helpful Resources",
       links: [
         {
           title: "FTC Scam Alerts",
-          description: "The Federal Trade Commission provides up-to-date information on the latest scams.",
-          url: "https://www.consumer.ftc.gov/features/scam-alerts"
+          description:
+            "The Federal Trade Commission provides up-to-date information on the latest scams.",
+          url: "https://www.consumer.ftc.gov/features/scam-alerts",
         },
         {
           title: "Phishing.org",
-          description: "Learn how to identify and avoid phishing attacks with in-depth guides and examples.",
-          url: "https://www.phishing.org/"
+          description:
+            "Learn how to identify and avoid phishing attacks with in-depth guides and examples.",
+          url: "https://www.phishing.org/",
         },
         {
           title: "Stay Safe Online",
-          description: "Powered by the National Cybersecurity Alliance, this site offers tips for all digital citizens.",
-          url: "https://staysafeonline.org/"
-        }
-      ]
+          description:
+            "Powered by the National Cybersecurity Alliance, this site offers tips for all digital citizens.",
+          url: "https://staysafeonline.org/",
+        },
+      ],
     },
   },
   mission: {
@@ -89,23 +104,27 @@ export const pageContent = {
     steps: [
       {
         title: "Submit a URL",
-        description: "Provide a live URL or use the manual input option to analyze local or offline code.",
+        description:
+          "Provide a live URL or use the manual input option to analyze local or offline code.",
       },
       {
         title: "Content Crawling",
-        description: "The system recursively crawls the website, downloading the content of linked pages and scripts from the same domain.",
+        description:
+          "The system recursively crawls the website, downloading the content of linked pages and scripts from the same domain.",
       },
       {
         title: "Dual AI Analysis",
-        description: "All collected content is sent to the Gemini API for two separate analyses: one for general scam tactics and another specifically for exposed secrets.",
+        description:
+          "All collected content is sent to the Gemini API for two separate analyses: one for general scam tactics and another specifically for exposed secrets.",
       },
       {
         title: "Receive Your Report",
-        description: "A detailed report is generated, including an overall risk score and specific findings with code snippets and source locations.",
+        description:
+          "A detailed report is generated, including an overall risk score and specific findings with code snippets and source locations.",
       },
     ],
   },
-    support: {
+  support: {
     title: "Support ScamScanner",
     paragraphs: [
       "ScamScanner is a free, open-source tool developed and maintained for educational purposes. Your support helps cover server costs, API fees, and allows for the continued development of new features.",
@@ -135,29 +154,54 @@ Your response MUST be a single JSON object that conforms to the provided schema.
 export const ANALYSIS_SCHEMA = {
   type: Type.OBJECT,
   properties: {
-    overallRisk: { type: Type.STRING, enum: ['Low', 'Medium', 'High', 'Very High', 'Unknown'], description: 'The overall risk assessment.' },
-    riskScore: { type: Type.INTEGER, description: 'A score from 0 (safe) to 100 (high risk).' },
-    summary: { type: Type.STRING, description: 'A one-sentence summary of the findings.' },
+    overallRisk: {
+      type: Type.STRING,
+      enum: ["Low", "Medium", "High", "Very High", "Unknown"],
+      description: "The overall risk assessment.",
+    },
+    riskScore: {
+      type: Type.INTEGER,
+      description: "A score from 0 (safe) to 100 (high risk).",
+    },
+    summary: {
+      type: Type.STRING,
+      description: "A one-sentence summary of the findings.",
+    },
     detailedAnalysis: {
       type: Type.ARRAY,
-      description: 'A list of specific issues found.',
+      description: "A list of specific issues found.",
       items: {
         type: Type.OBJECT,
         properties: {
-          category: { type: Type.STRING, description: 'Category of the issue (e.g., Phishing, Malicious Script).' },
-          description: { type: Type.STRING, description: 'Detailed explanation of the issue.' },
-          severity: { type: Type.STRING, enum: ['Low', 'Medium', 'High', 'Very High'], description: 'Severity of the specific issue.' },
-          codeSnippet: { type: Type.STRING, description: 'A relevant snippet of the suspicious code, if applicable.' },
+          category: {
+            type: Type.STRING,
+            description:
+              "Category of the issue (e.g., Phishing, Malicious Script).",
+          },
+          description: {
+            type: Type.STRING,
+            description: "Detailed explanation of the issue.",
+          },
+          severity: {
+            type: Type.STRING,
+            enum: ["Low", "Medium", "High", "Very High"],
+            description: "Severity of the specific issue.",
+          },
+          codeSnippet: {
+            type: Type.STRING,
+            description:
+              "A relevant snippet of the suspicious code, if applicable.",
+          },
         },
-        required: ['category', 'description', 'severity']
-      }
-    }
+        required: ["category", "description", "severity"],
+      },
+    },
   },
-  required: ['overallRisk', 'riskScore', 'summary', 'detailedAnalysis']
+  required: ["overallRisk", "riskScore", "summary", "detailedAnalysis"],
 };
 
 export const DEMO_SITES: { [key: string]: string } = {
-  'demo-safe.com': `
+  "demo-safe.com": `
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -180,7 +224,7 @@ export const DEMO_SITES: { [key: string]: string } = {
 </body>
 </html>`,
 
-  'demo-scam.com': `
+  "demo-scam.com": `
 <!DOCTYPE html>
 <html>
 <head>
@@ -209,5 +253,5 @@ export const DEMO_SITES: { [key: string]: string } = {
     </script>
     <iframe src="http://suspicious-ad-network.net/ads" width="1" height="1" style="display:none;"></iframe>
 </body>
-</html>`
+</html>`,
 };

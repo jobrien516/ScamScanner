@@ -6,12 +6,12 @@ import UrlInput from '@/components/UrlInput';
 import ManualInput from '@/components/ManualInput';
 import AnalysisResultDisplay from '@/components/AnalysisResult';
 import Spinner from '@/components/Spinner';
-import { DEMO_SITES, apiUrl } from '@/constants';
+import { DEMO_SITES, BACKEND_API_URL } from '@/constants';
 import HowItWorks from '@/components/HowItWorks';
 import WebSocketProgressLog from '@/components/WSProgressLog';
 
 const getWebSocketURL = () => {
-  return apiUrl.replace(/^http/, 'ws');
+  return BACKEND_API_URL.replace(/^http/, 'ws');
 };
 
 const ScannerPage: React.FC = () => {
@@ -31,9 +31,9 @@ const ScannerPage: React.FC = () => {
     let analysisCompleted = false;
 
     const handleError = (message: string) => {
-        setError(message);
-        setView(ViewState.START);
-        analysisCompleted = true;
+      setError(message);
+      setView(ViewState.START);
+      analysisCompleted = true;
     };
 
     wsRef.current.onopen = () => {
@@ -59,7 +59,7 @@ const ScannerPage: React.FC = () => {
     wsRef.current.onerror = () => {
       handleError('A WebSocket connection error occurred. Please try again.');
     };
-    
+
     wsRef.current.onclose = () => {
       if (!analysisCompleted && !isStopped) {
         handleError('The analysis was interrupted unexpectedly. Please try again.');
@@ -80,22 +80,20 @@ const ScannerPage: React.FC = () => {
     setIsStopped(false);
   }, []);
 
-  const handleUrlSubmit = useCallback(async (url: string) => {
+  const handleUrlSubmit = useCallback(async (url: string, scanDepth: string) => {
     startAnalysis();
     setCurrentUrl(url);
-
     try {
       const normalizedUrl = url.trim().replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
-      
-      const response = DEMO_SITES[normalizedUrl] 
+      const response = DEMO_SITES[normalizedUrl]
         ? await startHtmlAnalysis(DEMO_SITES[normalizedUrl])
-        : await analyzeUrl(url);
+        : await analyzeUrl(url, scanDepth);
 
       setJobId(response.job_id);
     } catch (err) {
-        const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-        setError(errorMessage);
-        setView(ViewState.START);
+      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
+      setError(errorMessage);
+      setView(ViewState.START);
     }
   }, [startAnalysis]);
 
@@ -147,14 +145,14 @@ const ScannerPage: React.FC = () => {
         return <ManualInput onAnalyze={handleManualSubmit} error={error} url={currentUrl} onBack={resetState} />;
       case ViewState.LOADING:
         return (
-          <div className="bg-slate-800/50 p-6 sm:p-8 rounded-xl shadow-2xl border border-slate-700">
+          <div className="bg-slate-800/50 p-6 max-w-3xl mx-auto sm:p-8 rounded-xl shadow-2xl border border-slate-700">
             <div className="flex items-center justify-center mb-6">
               {!isStopped && <Spinner />}
               <h2 className="ml-4 text-xl text-slate-200">
                 {isStopped ? 'Scan Cancelled' : 'Analysis in Progress...'}
               </h2>
             </div>
-            
+
             <div className="mb-6 text-center">
               {isStopped ? (
                 <button
@@ -179,7 +177,7 @@ const ScannerPage: React.FC = () => {
       case ViewState.RESULT:
         return <AnalysisResultDisplay result={analysisResult} error={error} onScanNew={resetState} url={currentUrl} />;
       default:
-        return <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error}/>;
+        return <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error} />;
     }
   };
 
