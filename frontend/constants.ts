@@ -8,19 +8,40 @@ export const pageContent = {
     subtitle: "Enter a website URL to analyze its source code for potential phishing, scams, and malicious activity using AI.",
   },
   footer: {
-    poweredBy: "Powered by Google Gemini and one over-caffeinated, under-rested developer.",
+    poweredBy: "Powered by Google Gemini and an Over-Caffeinated, Under-Rested Developer.",
     copyright: "© 2025 AI Scam Site Scanner. For educational purposes only.",
   },
   landing: {
     title: "Empowering Your Digital Safety",
     subtitle: "ScamScanner uses the power of AI to analyze website source code, helping you identify potential scams, phishing attempts, and malicious scripts before they can cause harm.",
     ctaButton: "Start Scanning Now",
+    webSafety: {
+      title: "Stay Safe Online",
+      tips: [
+        {
+          title: "Verify URLs",
+          description: "Always double-check the URL for spelling errors or unusual domain names before entering sensitive information."
+        },
+        {
+          title: "Beware of Urgency",
+          description: "Scammers often create a false sense of urgency to pressure you into making mistakes. Take your time."
+        },
+        {
+          title: "Look for HTTPS",
+          description: "Ensure the website uses a secure connection (https://) before providing any personal data."
+        }
+      ]
+    },
+    dataPrivacy: {
+      title: "Your Privacy Matters",
+      description: "ScamScanner is designed with your privacy in mind. We do not save, store, or share the source code of the websites you scan. The content is sent for analysis and then immediately discarded. We cache the analysis results for 24 hours for your convenience. Your scan history only contains the analysis results, not the original source data."
+    }
   },
   mission: {
-    title: "My Mission",
+    title: "Our Mission",
     paragraphs: [
-      "In an increasingly digital world, the threat of online scams, phishing, and malicious websites is ever-present. My mission is to provide a powerful, accessible, and easy-to-use tool that empowers users to navigate the web with greater confidence and security.",
-      "I believe that everyone has the right to be safe online. By leveraging cutting-edge AI technology, ScamScanner demystifies the complexities of website source code, offering clear, actionable insights into potential digital threats.",
+      "In an increasingly digital world, the threat of online scams, phishing, and malicious websites is ever-present. Our mission is to provide a powerful, accessible, and easy-to-use tool that empowers users to navigate the web with greater confidence and security.",
+      "We believe that everyone has the right to be safe online. By leveraging cutting-edge AI technology, ScamScanner demystifies the complexities of website source code, offering clear, actionable insights into potential digital threats.",
       "This tool was built for educational purposes to demonstrate the capabilities of generative AI in the field of cybersecurity. It is not a substitute for comprehensive security software but serves as a valuable first line of defense and a powerful learning resource.",
     ],
   },

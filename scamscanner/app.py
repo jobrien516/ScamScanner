@@ -3,7 +3,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from loguru import logger
 
-from .services.db import create_db_and_tables
+from .services.db import init_db
 from .api.endpoints import router
 
 
@@ -14,7 +14,7 @@ async def lifespan(app: FastAPI):
     On startup, it initializes the database.
     """
     logger.info("Application starting up...")
-    await create_db_and_tables()
+    await init_db()
     yield
     logger.info("Application shutting down...")
 

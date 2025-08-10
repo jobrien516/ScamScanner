@@ -139,8 +139,8 @@ const ScannerPage: React.FC = () => {
       case ViewState.START:
         return (
           <div className="space-y-8">
-            <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error} />
             <HowItWorks />
+            <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error} />
           </div>
         );
       case ViewState.MANUAL_INPUT:
