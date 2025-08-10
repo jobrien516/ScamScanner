@@ -31,26 +31,26 @@ const Homepage: React.FC = () => {
         </div>
       </div>
       {/* After the Button */}
-      <div className="grid lg:grid-cols-2 items-start">
+      <div className="space-y-8 gap-12 grid items-start">
 
         {/* Purpose Section */}
         <Card title={pageContent.home.purpose.title}>
-          <div className="grid md:grid-cols-2 gap-8 text-left">
+          <div className="space-y-4 grid text-center">
             {/* IS */}
-            <div className="flex flex-col">
-              <div className="inline-block p-3 bg-slate-700/50 rounded-full">
+            <div className="flex flex-col items-center border border-slate-700/50 rounded-xl">
+              <div className="inline-block p-3 rounded-full ">
                 <CheckIcon />
               </div>
               <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.home.purpose.isFor.title}</h3>
-              <p className="text-slate-300 mt-2">{pageContent.home.purpose.isFor.description}</p>
+              <p className="text-slate-300 py-4 mx-4">{pageContent.home.purpose.isFor.description}</p>
             </div>
             {/* IS NOT */}
-            <div className="flex flex-col">
+            <div className="flex flex-col items-center border border-slate-700/50 rounded-xl">
               <div className="inline-block p-3 bg-slate-700/50 rounded-full">
                 <XIcon />
               </div>
               <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.home.purpose.isNotFor.title}</h3>
-              <p className="text-slate-300 mt-2">{pageContent.home.purpose.isNotFor.description}</p>
+              <p className="text-slate-300 py-4 mt-2 mx-4">{pageContent.home.purpose.isNotFor.description}</p>
             </div>
           </div>
         </Card>
@@ -73,12 +73,12 @@ const Homepage: React.FC = () => {
         </Card>
 
         {/* Data Privacy Section */}
-        <Card className="h-full text-left">
+        <Card className="h-full text-center">
           <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
             <LockIcon />
           </div>
-          <h2 className="text-2xl font-bold text-slate-100 mt-4"><LockIcon />{pageContent.home.dataPrivacy.title}</h2>
-          <p className="text-slate-300 mt-4">{pageContent.home.dataPrivacy.description}</p>
+          <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.home.dataPrivacy.title}</h2>
+          <p className="text-slate-300 mt-4 text-left">{pageContent.home.dataPrivacy.description}</p>
         </Card>
 
         {/* Technology Section */}
@@ -87,7 +87,7 @@ const Homepage: React.FC = () => {
             <CodeIcon />
           </div>
           <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.home.technology.title}</h2>
-          <p className="text-slate-300 mt-4">{pageContent.home.technology.description}</p>
+          <p className="text-slate-300 mt-4 text-left">{pageContent.home.technology.description}</p>
         </Card>
 
         {/* Disclaimer Section */}
@@ -96,19 +96,19 @@ const Homepage: React.FC = () => {
             <AlertIcon />
           </div>
           <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.home.disclaimer.title}</h2>
-          <p className="text-slate-300 mt-4">{pageContent.home.disclaimer.description}</p>
+          <p className="text-slate-300 mt-4 text-left">{pageContent.home.disclaimer.description}</p>
         </Card>
 
         {/* Resources Section */}
         <Card title={pageContent.home.resources.title}>
-          <div className="space-y-4">
+          <div >
             {pageContent.home.resources.links.map((resource, index) => (
               <a
                 key={index}
                 href={resource.url}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-4 p-4 bg-slate-800 rounded-lg border border-slate-700 hover:bg-slate-700/50 transition-colors"
+                className="flex items-center mx-auto gap-4 p-4 mt-4 bg-slate-800 rounded-lg border border-slate-700 hover:bg-slate-700/50 transition-colors"
               >
                 <div className="flex-shrink-0 text-blue-400">
                   <LinkIcon />
