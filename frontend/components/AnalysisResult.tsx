@@ -1,8 +1,10 @@
 import React from 'react';
-import type { AnalysisResult, AnalysisFinding } from '@/types';
+import type { AnalysisResult } from '@/types';
 import { RiskLevel } from '@/types';
 import RiskBadge from './RiskBadge';
 import DomainInfoCard from './DomainInfoCard';
+import RiskScoreGauge from './RiskScoreGauge';
+import FindingCard from './FindingCard';
 
 interface AnalysisResultProps {
     result: AnalysisResult | null;
@@ -10,59 +12,6 @@ interface AnalysisResultProps {
     onScanNew: () => void;
     url?: string;
 }
-
-const RiskScoreGauge: React.FC<{ score: number }> = ({ score }: { score: number; }) => {
-    const validScore = typeof score === 'number' && !isNaN(score) ? score : 0;
-    const getScoreColor = (s: number) => {
-        if (s > 80) return 'text-red-500';
-        if (s > 55) return 'text-orange-500';
-        if (s > 20) return 'text-yellow-500';
-        return 'text-green-500';
-    };
-
-    const circumference = 2 * Math.PI * 52;
-    const offset = circumference - (validScore / 100) * circumference;
-
-    return (
-        <div className="relative h-32 w-32">
-            <svg className="transform -rotate-90" width="100%" height="100%" viewBox="0 0 120 120">
-                <circle cx="60" cy="60" r="52" strokeWidth="12" stroke="currentColor" className="text-slate-700" fill="transparent" />
-                <circle cx="60" cy="60" r="52" strokeWidth="12" stroke="currentColor" fill="transparent"
-                    strokeDasharray={circumference}
-                    strokeDashoffset={offset}
-                    strokeLinecap="round"
-                    className={`${getScoreColor(validScore)} transition-all duration-1000 ease-in-out`}
-                />
-            </svg>
-            <span className={`absolute inset-0 flex items-center justify-center text-3xl font-bold ${getScoreColor(score)}`}>{score}</span>
-        </div>
-    );
-};
-
-const FindingCard: React.FC<{ finding: AnalysisFinding }> = ({ finding }) => {
-    return (
-        <div className="bg-slate-800 rounded-lg p-4 border border-slate-700 transition-all hover:border-slate-600 hover:bg-slate-800/80">
-            <div className="flex justify-between items-start mb-2">
-                <h3 className="text-lg font-semibold text-slate-100">{finding.category}</h3>
-                <RiskBadge risk={finding.severity} />
-            </div>
-            <p className="text-slate-300">{finding.description}</p>
-            {finding.codeSnippet && (
-                <>
-                    {finding.fileName && (
-                        <div className="mt-3 text-xs text-slate-400 font-mono break-all">
-                           Source: {finding.fileName}
-                           {finding.lineNumber && ` (Line: ${finding.lineNumber})`}
-                        </div>
-                    )}
-                    <pre className="mt-1 bg-slate-900 p-3 rounded-md text-xs text-red-300 overflow-x-auto">
-                        <code>{finding.codeSnippet}</code>
-                    </pre>
-                </>
-            )}
-        </div>
-    );
-};
 
 const AnalysisResultDisplay: React.FC<AnalysisResultProps> = ({ result, error, onScanNew, url }) => {
 
