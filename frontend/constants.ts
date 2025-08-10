@@ -34,8 +34,47 @@ export const pageContent = {
     },
     dataPrivacy: {
       title: "Your Privacy Matters",
-      description: "ScamScanner is designed with your privacy in mind. We do not save, store, or share the source code of the websites you scan. The content is sent for analysis and then immediately discarded. We cache the analysis results for 24 hours for your convenience. Your scan history only contains the analysis results, not the original source data."
-    }
+      description: "ScamScanner is designed with your privacy in mind. We do not save, store, or share the source code of the websites you scan. The content is sent for analysis and then immediately discarded. We cache the analysis results for 24 hours for your convenience and our wallet. Your scan history only contains the analysis results, not the original source data."
+    },
+    technology: {
+        title: "Technology We Use",
+        description: "This application is a full-stack project built with a modern technology stack. The backend is powered by Python and FastAPI, handling web crawling and asynchronous tasks. The frontend is a responsive single-page application built with React and TypeScript, styled with Tailwind CSS."
+    },
+    disclaimer: {
+        title: "Disclaimer",
+        description: "ScamScanner is an educational tool and is not a substitute for a comprehensive antivirus or security suite. While it is designed to identify common threats, it may not catch every malicious site. Always exercise caution and use your best judgment when Browse online."
+    },
+    purpose: {
+        title: "An Educational Tool for a Safer Web",
+        isFor: {
+            title: "What This App Is",
+            description: "ScamScanner is an educational tool designed to demonstrate how AI can be used to detect potential online threats. It serves as a powerful first-pass-filter to help you spot common red flags in a website's code."
+        },
+        isNotFor: {
+            title: "What This App Isn't",
+            description: "This tool is not a replacement for a comprehensive antivirus or internet security suite. It cannot guarantee the detection of all threats and should be used as one of many tools in your online safety toolkit."
+        }
+    },
+    resources: {
+      title: "Helpful Resources",
+      links: [
+        {
+          title: "FTC Scam Alerts",
+          description: "The Federal Trade Commission provides up-to-date information on the latest scams.",
+          url: "https://www.consumer.ftc.gov/features/scam-alerts"
+        },
+        {
+          title: "Phishing.org",
+          description: "Learn how to identify and avoid phishing attacks with in-depth guides and examples.",
+          url: "https://www.phishing.org/"
+        },
+        {
+          title: "Stay Safe Online",
+          description: "Powered by the National Cybersecurity Alliance, this site offers tips for all digital citizens.",
+          url: "https://staysafeonline.org/"
+        }
+      ]
+    },
   },
   mission: {
     title: "Our Mission",
