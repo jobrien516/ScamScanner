@@ -67,7 +67,7 @@ Once the containers are running, you can access the application:
   * **Frontend**: [http://localhost:5173](https://www.google.com/search?q=http://localhost:5173)
   * **Backend API**: [http://localhost:8000](https://www.google.com/search?q=http://localhost:8000)
 
-## 📖 How to Use
+## How to Use
 
 1.  Navigate to the **Scanner** page.
 2.  Enter a full website URL into the input field and click "Scan Website". If you are unsure or want to scan our test sites, you can enter `demo-scan.com` or `demo-safe.com` and run the scan.
