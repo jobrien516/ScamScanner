@@ -18,6 +18,7 @@ async def lifespan(app: FastAPI):
     yield
     logger.info("Application shutting down...")
 
+
 def create_app():
     app = FastAPI(
         title="ScamScanner API",

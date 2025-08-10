@@ -64,7 +64,7 @@ export const pageContent = {
       isNotFor: {
         title: "What This App Isn't",
         description:
-          "This tool is not a replacement for a comprehensive antivirus or internet security suite. It cannot guarantee the detection of all threats and should be used as one of many tools in your online safety toolkit.",
+          "ScamScanner is not a replacement for a comprehensive antivirus or internet security suite. It cannot guarantee the detection of all threats and should be used as one of many tools in your online safety toolkit.",
       },
     },
     resources: {

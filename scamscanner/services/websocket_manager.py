@@ -1,9 +1,10 @@
 from fastapi import WebSocket
 from typing import Dict, Any
-import json
+
 
 class ConnectionManager:
     """Manages active WebSocket connections."""
+
     def __init__(self):
         self.active_connections: Dict[str, WebSocket] = {}
 
@@ -22,5 +23,6 @@ class ConnectionManager:
     async def send_final_result(self, result: Any, job_id: str):
         if job_id in self.active_connections:
             await self.active_connections[job_id].send_json(result)
+
 
 manager = ConnectionManager()

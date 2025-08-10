@@ -12,17 +12,20 @@ load_dotenv()
 
 DATABASE_URL = os.getenv("DATABASE_URL", "sqlite+aiosqlite:///scamscan.db")
 
+
 class PydanticEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, main.SQLModel):
             return obj.model_dump()
         return json.JSONEncoder.default(self, obj)
 
+
 engine = create_async_engine(
-    DATABASE_URL, 
-    echo=False, 
-    json_serializer=lambda obj: json.dumps(obj, cls=PydanticEncoder)
+    DATABASE_URL,
+    echo=False,
+    json_serializer=lambda obj: json.dumps(obj, cls=PydanticEncoder),
 )
+
 
 async def init_db():
     """
@@ -35,6 +38,7 @@ async def init_db():
         #      await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
     logger.info("Database tables verified/created successfully.")
+
 
 @asynccontextmanager
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:

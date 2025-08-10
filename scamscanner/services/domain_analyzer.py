@@ -4,6 +4,7 @@ from loguru import logger
 from datetime import datetime
 from fastapi.concurrency import run_in_threadpool
 
+
 class DomainAnalyzer:
     async def get_domain_info(self, url: str):
         """
@@ -15,6 +16,7 @@ class DomainAnalyzer:
         Returns:
             A dictionary containing key domain information or None on failure.
         """
+
         def sync_whois_lookup(domain: str):
             """Wrapper for the synchronous whois call."""
             try:
@@ -41,16 +43,20 @@ class DomainAnalyzer:
             expiration_date = w.expiration_date
             if isinstance(expiration_date, list):
                 expiration_date = expiration_date[0]
-            
+
             domain_age_days = None
             if isinstance(creation_date, datetime):
                 domain_age_days = (datetime.now() - creation_date).days
 
             return {
                 "registrar": w.registrar,
-                "creation_date": creation_date.isoformat() if isinstance(creation_date, datetime) else None,
-                "expiration_date": expiration_date.isoformat() if isinstance(expiration_date, datetime) else None,
-                "domain_age_days": domain_age_days
+                "creation_date": creation_date.isoformat()
+                if isinstance(creation_date, datetime)
+                else None,
+                "expiration_date": expiration_date.isoformat()
+                if isinstance(expiration_date, datetime)
+                else None,
+                "domain_age_days": domain_age_days,
             }
 
         except Exception as e:

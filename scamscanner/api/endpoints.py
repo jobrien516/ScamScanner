@@ -1,8 +1,13 @@
 import uuid
 from typing import List
-from fastapi import APIRouter, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
+from fastapi import (
+    APIRouter,
+    HTTPException,
+    BackgroundTasks,
+    WebSocket,
+    WebSocketDisconnect,
+)
 from loguru import logger
-from datetime import datetime, timedelta
 from sqlmodel import select
 from sqlalchemy import desc
 
@@ -13,12 +18,15 @@ from ..services.websocket_manager import manager
 
 router = APIRouter()
 
+
 @router.get("/history", response_model=List[AnalysisResult])
 async def get_analysis_history():
     """Retrieves all analysis results from the database, ordered by most recent."""
     try:
         async with get_db_session() as db:
-            statement = select(AnalysisResult).order_by(desc(AnalysisResult.last_analyzed_at))  # type: ignore
+            statement = select(AnalysisResult).order_by(
+                desc(AnalysisResult.last_analyzed_at)
+            )  # type: ignore
             results = await db.exec(statement)
             return results.all()
     except Exception as e:
@@ -32,27 +40,31 @@ async def analyze_url(request: UrlRequest, background_tasks: BackgroundTasks):
     Accepts a URL for analysis, starts a background task, and returns a job ID.
     """
     job_id = str(uuid.uuid4())
-    background_tasks.add_task(run_analysis, request.url, job_id, manager, scan_depth=str(request.scan_depth))
+    background_tasks.add_task(
+        run_analysis, request.url, job_id, manager, scan_depth=str(request.scan_depth)
+    )
     return {"job_id": job_id}
+
 
 @router.post("/analyze-html")
 async def analyze_html(request: HtmlRequest, background_tasks: BackgroundTasks):
     """
-    Accepts raw HTML content for analysis, starts a background task, 
+    Accepts raw HTML content for analysis, starts a background task,
     and returns a job ID.
     """
     job_id = str(uuid.uuid4())
     # A unique placeholder URL for manual analysis jobs
     url_placeholder = f"manual_analysis_{job_id}"
-    
+
     background_tasks.add_task(
-        run_analysis, 
-        url=url_placeholder, 
-        job_id=job_id, 
-        manager=manager, 
-        content=request.html
+        run_analysis,
+        url=url_placeholder,
+        job_id=job_id,
+        manager=manager,
+        content=request.html,
     )
     return {"job_id": job_id}
+
 
 @router.websocket("/ws/{job_id}")
 async def get_websocket(websocket: WebSocket, job_id: str):
@@ -64,6 +76,7 @@ async def get_websocket(websocket: WebSocket, job_id: str):
     except WebSocketDisconnect:
         manager.disconnect(job_id)
         logger.info(f"WebSocket disconnected for job {job_id}")
+
 
 # @router.post("/analyze", response_model=AnalysisResult)
 # async def analyze_url_with_caching(request: UrlRequest):

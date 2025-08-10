@@ -153,7 +153,7 @@ const Scanner: React.FC = () => {
               </h2>
             </div>
 
-            <div className="mb-6 text-center">
+            <div className="mb-6 max-w-5xl mx-auto text-center">
               {isStopped ? (
                 <button
                   onClick={resetState}

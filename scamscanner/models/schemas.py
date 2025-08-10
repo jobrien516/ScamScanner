@@ -27,13 +27,16 @@ class AnalysisFinding(SQLModel):
 
 class DomainInfo(SQLModel):
     """Represents WHOIS and domain information. Not a table model."""
+
     registrar: Optional[str] = None
     creation_date: Optional[str] = None
     expiration_date: Optional[str] = None
     domain_age_days: Optional[int] = None
 
+
 class AnalysisResult(SQLModel, table=True):
     """Represents an analysis result as a database table."""
+
     id: Optional[int] = Field(default=None, primary_key=True)
     site_url: str = Field(index=True)
     overallRisk: RiskLevel

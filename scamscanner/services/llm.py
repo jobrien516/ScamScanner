@@ -4,13 +4,12 @@ from google.genai import types
 from ..models.constants import ANALYSIS_SCHEMA, ANALYSIS_PROMPT
 from ..config import settings
 
+
 def generate_analysis(content: str, prompt: str = ANALYSIS_PROMPT):
     """
     Analyzes content using the synchronous Gemini API.
     """
-    client = genai.Client(
-        api_key=settings.GEMINI_KEY
-    )
+    client = genai.Client(api_key=settings.GEMINI_KEY)
 
     model = settings.GEMINI_MODEL
     contents = types.Part(text=prompt + content)
