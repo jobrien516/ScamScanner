@@ -1,5 +1,5 @@
 import aiohttp
-from urllib.parse import urljoin, urlparse
+from urllib.parse import urljoin, urlparse, urlunparse
 from bs4 import BeautifulSoup, Tag
 from loguru import logger
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -8,11 +8,18 @@ from sqlmodel import select
 from ..models.schemas import Site, SubPage
 from ..exceptions import WebsiteFetchError
 from ..models.constants import DEMO_SITES
+from .websocket_manager import ConnectionManager
 
+def _normalize_url(url: str) -> str:
+    """Strips query parameters and fragments from a URL."""
+    parsed = urlparse(url)
+    return urlunparse((parsed.scheme, parsed.netloc, parsed.path, "", "", ""))
 
 class WebsiteFetcher:
-    def __init__(self, url):
-        self.url = url
+    def __init__(self, url: str, job_id: str, manager: ConnectionManager):
+        self.url = _normalize_url(url)
+        self.job_id = job_id
+        self.manager = manager
         self.visited_urls = set()
         self.urls_to_visit = [url]
         self.domain_name = urlparse(url).netloc
@@ -66,8 +73,7 @@ class WebsiteFetcher:
 
     async def download_site(self, session: AsyncSession):
         """
-        Downloads the entire website by crawling links within the same domain
-        and saves the content.
+        Downloads relevant files by crawling and normalizing links within the same domain.
         """
         statement = select(Site).where(Site.url == self.url)
         result = await session.exec(statement)
@@ -77,90 +83,56 @@ class WebsiteFetcher:
             session.add(site)
             await session.commit()
             await session.refresh(site)
-
+        
         if site.id is None:
-            logger.error(f"Could not create or find a site entry for {self.url}")
-            return
+                logger.error(f"Could not create or find a site entry for {self.url}")
+                return
 
         self.site_id = site.id
+
+        total_urls_found = 1
+        processed_urls = 0
+        ignored_extensions = ['.css', '.svg', '.png', '.jpg', '.jpeg', '.gif', '.ico', '.webp', '.pdf', '.zip', '.woff', '.woff2', '.ttf', '.json']
 
         async with aiohttp.ClientSession() as http_session:
             while self.urls_to_visit:
                 current_url = self.urls_to_visit.pop(0)
+                processed_urls += 1
 
                 if current_url in self.visited_urls:
                     continue
 
                 self.visited_urls.add(current_url)
-
-                ignored_extensions = [
-                    ".css",
-                    ".svg",
-                    ".png",
-                    ".jpg",
-                    ".jpeg",
-                    ".gif",
-                    ".ico",
-                    ".webp",
-                    ".pdf",
-                    ".zip",
-                    ".woff",
-                    ".woff2",
-                    ".ttf",
-                ]
-                if any(
-                    urlparse(current_url).path.lower().endswith(ext)
-                    for ext in ignored_extensions
-                ):
-                    logger.info(f"Skipping non-scannable file type: {current_url}")
-                    continue
-
-                logger.info(f"Downloading: {current_url}")
-
+                await self.manager.send_update(f"Crawling {processed_urls}/{total_urls_found}: {current_url}", self.job_id)
+                
                 try:
                     content = await self.fetch_url_content(current_url)
                     if content is None:
                         continue
 
-                    await self.save_subpage_to_db(current_url, content, session)
+                    if any(urlparse(current_url).path.lower().endswith(ext) for ext in ['.js', '.html', 'htm', '']) or '.' not in urlparse(current_url).path.split('/')[-1]:
+                        await self.save_subpage_to_db(current_url, content, session)
 
-                    soup = BeautifulSoup(content, "html.parser")
-                    for tag in soup.find_all(["a", "link", "script", "img"]):
-                        if isinstance(tag, Tag):
-                            attr = "href" if tag.name in ["a", "link"] else "src"
-                            if tag.has_attr(attr):
-                                link_url = str(tag[attr])
-                                absolute_url = urljoin(current_url, link_url)
-                                if (
-                                    urlparse(absolute_url).netloc == self.domain_name
-                                    and absolute_url not in self.visited_urls
-                                ):
-                                    self.urls_to_visit.append(absolute_url)
+                        if '<html' in content.lower():
+                            soup = BeautifulSoup(content, "html.parser")
+                            for tag in soup.find_all(["a", "link", "script", "img"]):
+                                if isinstance(tag, Tag):
+                                    attr = "href" if tag.name in ["a", "link"] else "src"
+                                    if tag.has_attr(attr):
+                                        link_url = str(tag[attr])
+                                        absolute_url = urljoin(current_url, link_url)
+                                        normalized_absolute_url = _normalize_url(absolute_url)
+                                        
+                                        if (
+                                            urlparse(normalized_absolute_url).netloc == self.domain_name
+                                            and normalized_absolute_url not in self.visited_urls
+                                            and not any(urlparse(normalized_absolute_url).path.lower().endswith(ext) for ext in ignored_extensions)
+                                        ):
+                                            if normalized_absolute_url not in self.urls_to_visit:
+                                                self.urls_to_visit.append(normalized_absolute_url)
+                                                total_urls_found += 1
                 except WebsiteFetchError:
                     logger.warning(f"Could not download {current_url}. Skipping.")
 
+        await self.manager.send_update("Crawl complete. Analyzing content...", self.job_id)
         logger.info("\nDownload complete.")
-
-
-#     # async def save_to_db(self, current_url: str, html: str, db: AsyncSession | None = None):
-#     #     """Saves the fetched HTML content to the database if it doesn't already exist."""
-
-#     #     async def _save(session: AsyncSession):
-#     #         statement = select(Site).where(Site.url == current_url)
-#     #         result = await session.exec(statement)
-#     #         existing_site = result.first()
-
-#     #         if existing_site:
-#     #             logger.info(f"URL {current_url} already exists in the database. Skipping.")
-#     #             return
-
-#     #         site = Site(url=current_url, html=html)
-#     #         session.add(site)
-#     #         await session.commit()
-#     #         logger.info(f"Successfully saved HTML for {current_url} to database.")
-
-#     #     if db is None:
-#     #         async with get_db_session() as session:
-#     #             await _save(session)
-#     #     else:
-#     #         await _save(db)

@@ -25,15 +25,22 @@ class AnalysisFinding(SQLModel):
     lineNumber: Optional[int] = None
 
 
+class DomainInfo(SQLModel):
+    """Represents WHOIS and domain information. Not a table model."""
+    registrar: Optional[str] = None
+    creation_date: Optional[str] = None
+    expiration_date: Optional[str] = None
+    domain_age_days: Optional[int] = None
+
 class AnalysisResult(SQLModel, table=True):
     """Represents an analysis result as a database table."""
-
     id: Optional[int] = Field(default=None, primary_key=True)
     site_url: str = Field(index=True)
     overallRisk: RiskLevel
     riskScore: int
     summary: str
     detailedAnalysis: List[AnalysisFinding] = Field(default=[], sa_column=Column(JSON))
+    domainInfo: Optional[DomainInfo] = Field(default=None, sa_column=Column(JSON))
     last_analyzed_at: datetime = Field(default_factory=datetime.now, index=True)
 
     site_id: int = Field(foreign_key="site.id")

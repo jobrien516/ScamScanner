@@ -2,6 +2,7 @@ import React from 'react';
 import type { AnalysisResult, AnalysisFinding } from '@/types';
 import { RiskLevel } from '@/types';
 import RiskBadge from './RiskBadge';
+import DomainInfoCard from './DomainInfoCard';
 
 interface AnalysisResultProps {
     result: AnalysisResult | null;
@@ -14,8 +15,8 @@ const RiskScoreGauge: React.FC<{ score: number }> = ({ score }: { score: number;
     const validScore = typeof score === 'number' && !isNaN(score) ? score : 0;
     const getScoreColor = (s: number) => {
         if (s > 80) return 'text-red-500';
-        if (s > 60) return 'text-orange-500';
-        if (s > 40) return 'text-yellow-500';
+        if (s > 55) return 'text-orange-500';
+        if (s > 20) return 'text-yellow-500';
         return 'text-green-500';
     };
 
@@ -158,23 +159,33 @@ const AnalysisResultDisplay: React.FC<AnalysisResultProps> = ({ result, error, o
                     <h2 className="text-xl font-semibold text-slate-200 break-all">{url}</h2>
                 </div>
             )}
-            <div className="bg-slate-800/50 p-6 rounded-xl shadow-2xl border border-slate-700 grid md:grid-cols-3 gap-6 items-center max-w-3xl mx-auto">
-                <div className="flex justify-center md:justify-start">
-                    <RiskScoreGauge score={result.riskScore} />
-                </div>
-                <div className="md:col-span-2 text-center md:text-left">
-                    <div className="flex items-center justify-center md:justify-start gap-3">
-                        <h2 className="text-2xl font-bold text-slate-100">Overall Risk</h2>
-                        <RiskBadge risk={result.overallRisk} large />
+            
+            <div className="grid lg:grid-cols-2 gap-8 items-start">
+                <div>
+                    <h3 className="text-xl font-semibold text-slate-200 mb-2">Risk Assessment</h3>
+                    <div className="bg-slate-800/50 p-6 rounded-xl border border-slate-700 flex flex-col sm:flex-row gap-6 items-center">
+                        <div className="flex-shrink-0">
+                            <RiskScoreGauge score={result.riskScore} />
+                        </div>
+                        <div className="text-center sm:text-left">
+                            <div className="flex items-center justify-center sm:justify-start gap-3">
+                                <h4 className="text-lg font-bold text-slate-100">Overall Risk</h4>
+                                <RiskBadge risk={result.overallRisk} />
+                            </div>
+                            <p className="mt-2 text-slate-300">{riskMessage}</p>
+                            <p className="mt-2 text-slate-300">{result.summary}</p>
+                        </div>
                     </div>
-                    <p className="mt-2 text-slate-300 text-lg">{riskMessage}</p>
-                    <p className="mt-2 text-slate-300 text-lg">{result.summary}</p>
-
                 </div>
+
+                {result.domainInfo && (
+                    <DomainInfoCard info={result.domainInfo} />
+                )}
             </div>
 
+
             <div className="space-y-4">
-                <h3 className="text-xl font-semibold text-slate-200">Detailed Findings</h3>
+                <h3 className="text-xl font-semibold text-slate-200">Detailed AI Findings</h3>
                 {detailedAnalysis.length > 0 ? (
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                         {detailedAnalysis.map((finding, index) => (

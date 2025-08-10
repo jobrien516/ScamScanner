@@ -15,11 +15,19 @@ export interface AnalysisFinding {
   lineNumber?: number;
 }
 
+export interface DomainInfo {
+  registrar?: string;
+  creation_date?: string;
+  expiration_date?: string;
+  domain_age_days?: number;
+}
+
 export interface AnalysisResult {
   overallRisk: RiskLevel;
   riskScore: number;
   summary: string;
   detailedAnalysis: AnalysisFinding[];
+  domainInfo?: DomainInfo;
 }
 
 export enum ViewState {
