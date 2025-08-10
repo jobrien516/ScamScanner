@@ -12,13 +12,13 @@ def generate_analysis(content: str, prompt: str = ANALYSIS_PROMPT):
         api_key=settings.GEMINI_KEY
     )
 
-    model = "gemini-2.5-pro"
+    model = settings.GEMINI_MODEL
     contents = types.Part(text=prompt + content)
 
     generate_content_config = types.GenerateContentConfig(
         temperature=0,
         top_p=0.0,
-        max_output_tokens=8192, # Adjusted for safety
+        max_output_tokens=8192,
         response_mime_type="application/json",
         response_json_schema=ANALYSIS_SCHEMA,
     )

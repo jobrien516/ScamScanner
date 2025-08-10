@@ -43,6 +43,15 @@ export const pageContent = {
       },
     ],
   },
+    support: {
+    title: "Support ScamScanner",
+    paragraphs: [
+      "ScamScanner is a free, open-source tool developed and maintained for educational purposes. Your support helps cover server costs, API fees, and allows for the continued development of new features.",
+      "If you find this tool useful, please consider making a contribution. Every little bit helps keep the project alive and running. Thank you for your support!",
+    ],
+    paypal: "Donate with PayPal",
+    kofi: "Buy Me a Coffee",
+  },
 };
 
 export const ANALYSIS_PROMPT = `

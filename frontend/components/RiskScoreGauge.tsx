@@ -8,8 +8,8 @@ const RiskScoreGauge: React.FC<RiskScoreGaugeProps> = ({ score }) => {
     const validScore = typeof score === 'number' && !isNaN(score) ? score : 0;
     const getScoreColor = (s: number) => {
         if (s > 80) return 'text-red-500';
-        if (s > 60) return 'text-orange-500';
-        if (s > 40) return 'text-yellow-500';
+        if (s > 55) return 'text-orange-500';
+        if (s > 20) return 'text-yellow-500';
         return 'text-green-500';
     };
 

@@ -1,8 +1,10 @@
 import uuid
+from typing import List
 from fastapi import APIRouter, HTTPException, BackgroundTasks, WebSocket, WebSocketDisconnect
 from loguru import logger
 from datetime import datetime, timedelta
 from sqlmodel import select
+from sqlalchemy import desc
 
 from ..models.schemas import UrlRequest, HtmlRequest, AnalysisResult
 from ..services.db import get_db_session
@@ -10,6 +12,19 @@ from ..services.workflows import run_analysis
 from ..services.websocket_manager import manager
 
 router = APIRouter()
+
+@router.get("/history", response_model=List[AnalysisResult])
+async def get_analysis_history():
+    """Retrieves all analysis results from the database, ordered by most recent."""
+    try:
+        async with get_db_session() as db:
+            statement = select(AnalysisResult).order_by(desc(AnalysisResult.last_analyzed_at))  # type: ignore
+            results = await db.exec(statement)
+            return results.all()
+    except Exception as e:
+        logger.error(f"Failed to fetch analysis history: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch analysis history.")
+
 
 @router.post("/analyze")
 async def analyze_url(request: UrlRequest, background_tasks: BackgroundTasks):

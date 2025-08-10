@@ -29,7 +29,6 @@ class DomainAnalyzer:
                 return None
 
             logger.info(f"Performing WHOIS lookup for {domain_name}...")
-            # Run the synchronous whois call in a thread pool
             w = await run_in_threadpool(sync_whois_lookup, domain_name)
 
             if not w or not w.creation_date:

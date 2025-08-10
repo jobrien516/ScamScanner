@@ -17,8 +17,8 @@ from ..services.db import get_db_session
 def _calculate_overall_risk(analysis_data: dict) -> dict:
     """Calculates a new risk score and level based on all findings."""
     severity_points = {
-        "Low": 1,
-        "Medium": 9,
+        "Low": 3,
+        "Medium": 11,
         "High": 24,
         "Very High": 39
     }

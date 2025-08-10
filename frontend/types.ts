@@ -28,6 +28,14 @@ export interface AnalysisResult {
   summary: string;
   detailedAnalysis: AnalysisFinding[];
   domainInfo?: DomainInfo;
+  id?: number; 
+  site_url?: string;
+  last_analyzed_at?: string;
+}
+export interface HistoryAnalysisResult extends AnalysisResult {
+  id: number;
+  site_url: string;
+  last_analyzed_at: string;
 }
 
 export enum ViewState {

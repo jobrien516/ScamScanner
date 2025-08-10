@@ -1,3 +1,4 @@
+import type { HistoryAnalysisResult } from '@/types';
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
 export class ApiError extends Error {
@@ -6,6 +7,19 @@ export class ApiError extends Error {
     this.name = 'ApiError';
   }
 }
+
+export const getHistory = async (): Promise<HistoryAnalysisResult[]> => { // Use the new type here
+  try {
+    const response = await fetch(`${API_BASE_URL}/history`);
+    if (!response.ok) {
+      throw new Error('Failed to fetch analysis history');
+    }
+    return await response.json();
+  } catch (error) {
+    console.error('Error in getHistory:', error);
+    throw error;
+  }
+};
 
 export const analyzeUrl = async (url: string): Promise<{ job_id: string }> => {
   try {
