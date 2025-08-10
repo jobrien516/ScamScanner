@@ -43,6 +43,13 @@ const Navbar: React.FC = () => {
                 >
                     Our Mission
                 </NavLink>
+                <NavLink 
+                    to="/support" 
+                    className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
+                    style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                >
+                    Support Us
+                </NavLink>
             </div>
         </nav>
     );

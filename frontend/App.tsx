@@ -6,6 +6,7 @@ import LandingPage from '@/components/pages/LandingPage';
 import ScannerPage from '@/components/pages/ScannerPage';
 import MissionPage from '@/components/pages/MissionPage';
 import HistoryPage from '@/components/pages/HistoryPage';
+import SupportPage from '@/components/pages/SupportPage';
 
 const App: React.FC = () => {
   return (
@@ -14,6 +15,7 @@ const App: React.FC = () => {
       <Route path="/scanner" element={<Page><ScannerPage /></Page>} />
       <Route path="/history" element={<Page><HistoryPage /></Page>} />
       <Route path="/mission" element={<Page><MissionPage /></Page>} />
+      <Route path="/support" element={<Page><SupportPage /></Page>} />
     </Routes>
   );
 };

@@ -1,12 +1,14 @@
 import { Type } from '@google/genai';
 
+export const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
+
 export const pageContent = {
   header: {
     title: "ScamScanner",
     subtitle: "Enter a website URL to analyze its source code for potential phishing, scams, and malicious activity using AI.",
   },
   footer: {
-    poweredBy: "Powered by Google Gemini.",
+    poweredBy: "Powered by Google Gemini and one over-caffeinated, under-rested developer.",
     copyright: "© 2025 AI Scam Site Scanner. For educational purposes only.",
   },
   landing: {
@@ -15,10 +17,10 @@ export const pageContent = {
     ctaButton: "Start Scanning Now",
   },
   mission: {
-    title: "Our Mission",
+    title: "My Mission",
     paragraphs: [
-      "In an increasingly digital world, the threat of online scams, phishing, and malicious websites is ever-present. Our mission is to provide a powerful, accessible, and easy-to-use tool that empowers users to navigate the web with greater confidence and security.",
-      "We believe that everyone has the right to be safe online. By leveraging cutting-edge AI technology, ScamScanner demystifies the complexities of website source code, offering clear, actionable insights into potential digital threats.",
+      "In an increasingly digital world, the threat of online scams, phishing, and malicious websites is ever-present. My mission is to provide a powerful, accessible, and easy-to-use tool that empowers users to navigate the web with greater confidence and security.",
+      "I believe that everyone has the right to be safe online. By leveraging cutting-edge AI technology, ScamScanner demystifies the complexities of website source code, offering clear, actionable insights into potential digital threats.",
       "This tool was built for educational purposes to demonstrate the capabilities of generative AI in the field of cybersecurity. It is not a substitute for comprehensive security software but serves as a valuable first line of defense and a powerful learning resource.",
     ],
   },

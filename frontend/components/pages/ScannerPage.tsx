@@ -6,12 +6,11 @@ import UrlInput from '@/components/UrlInput';
 import ManualInput from '@/components/ManualInput';
 import AnalysisResultDisplay from '@/components/AnalysisResult';
 import Spinner from '@/components/Spinner';
-import { DEMO_SITES } from '@/constants';
+import { DEMO_SITES, apiUrl } from '@/constants';
 import HowItWorks from '@/components/HowItWorks';
 import WebSocketProgressLog from '@/components/WSProgressLog';
 
 const getWebSocketURL = () => {
-  const apiUrl = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
   return apiUrl.replace(/^http/, 'ws');
 };
 
