@@ -1,37 +1,35 @@
 import React from 'react';
 import { pageContent } from '@/constants';
 import Card from '@/components/Card';
+import SupportButton from '@/components/SupportButton';
 
-const Support: React.FC = () => {
+const SupportPage: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto animate-fade-in text-center">
       <Card title={pageContent.support.title}>
-        <div className="space-y-4 text-slate-300 mb-8">
+        <div className="space-y-4 text-slate-300">
           {pageContent.support.paragraphs.map((paragraph, index) => (
             <p key={index}>{paragraph}</p>
           ))}
         </div>
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto bg-[#00457C] hover:bg-[#003057] text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center"
-          >
-            {pageContent.support.paypal}
-          </a>
-          <a
-            href="#"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="w-full sm:w-auto bg-[#FF5E5B] hover:bg-[#E74C49] text-white font-bold py-3 px-6 rounded-lg transition duration-200 flex items-center justify-center"
-          >
-            {pageContent.support.kofi}
-          </a>
-        </div>
       </Card>
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
+        {/* <SupportButton
+            content={pageContent.support.paypal}
+            url="https://www.paypal.com" // Example URL
+            color="#00457C"
+            hoverColor="#003057"
+          /> */}
+        <SupportButton
+          content={pageContent.support.kofi}
+          url="https://www.buymeacoffee.com/jobrien"
+          color="#FFDD00"
+          hoverColor="#FFCC39"
+          textColor="#000000"
+        />
+      </div>
     </div>
   );
 };
 
-export default Support;
+export default SupportPage;
