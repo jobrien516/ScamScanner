@@ -17,51 +17,36 @@ def clean_markdown_code_blocks(markdown_text: str) -> str:
 
 
 class WebsiteAnalyzer:
-    async def analyze_content(self, content: str) -> str:
+    def analyze_content(self, content: str) -> str:
         """
         Analyzes the provided text content using the generative AI model.
-
-        Args:
-            content: The text content of the website to analyze (HTML, JS, etc.).
-
-        Returns:
-            A JSON string containing the analysis result.
         """
         try:
             logger.info("Starting website content analysis.")
-            response = await generate_analysis(content=content)
+            response = generate_analysis(content=content)
 
             if response:
                 logger.info("Successfully received analysis from AI model.")
                 return response
             else:
-                logger.error(
-                    f"AI model returned an empty response. Feedback: {response}"
-                )
-                raise ValueError(
-                    "AI model returned no content, possibly due to safety settings or other issues."
-                )
-
+                logger.error("AI model returned an empty response.")
+                raise ValueError("AI model returned no content.")
         except Exception as e:
             logger.error(f"Error during website analysis: {e}")
             raise
 
-    async def analyze_for_secrets(self, content: str) -> str:
+    def analyze_for_secrets(self, content: str) -> str:
         """
         Analyzes the provided content for exposed secrets.
         """
         try:
             logger.info("Starting secret analysis.")
-            response = await generate_analysis(
-                content=content, prompt=SECRET_ANALYSIS_PROMPT
-            )
+            response = generate_analysis(content=content, prompt=SECRET_ANALYSIS_PROMPT)
             if response:
                 logger.info("Successfully received secret analysis from AI model.")
                 return response
             else:
-                logger.error(
-                    f"AI model returned an empty response for secrets scan. Feedback: {response}"
-                )
+                logger.error("AI model returned an empty response for secrets scan.")
                 raise ValueError("AI model returned no content for secrets scan.")
         except Exception as e:
             logger.error(f"Error during secret analysis: {e}")

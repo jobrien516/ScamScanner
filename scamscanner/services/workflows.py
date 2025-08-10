@@ -51,13 +51,9 @@ async def _save_analysis_to_db(db: AsyncSession, site: Site, analysis_data: dict
     if site.id is None:
         raise ValueError("The Site object must be saved and have an ID before analysis can be saved.")
 
-    # Add site-related info to the dictionary BEFORE validation
     analysis_data['site_id'] = site.id
     analysis_data['site_url'] = site.url
-
-    # Recalculate risk based on combined findings
     final_analysis = _calculate_overall_risk(analysis_data)
-    
     new_record = AnalysisResult.model_validate(final_analysis)
     
     db.add(new_record)
@@ -94,7 +90,7 @@ async def run_analysis(url: str, job_id: str, manager: ConnectionManager, conten
 
                 aggregated_content = " ".join([sub_page.content for sub_page in site.sub_pages])
                 
-                await manager.send_update("Finding out who owns this jawn...", job_id)
+                await manager.send_update("Using WHOIS to find out who owns this jawn...", job_id)
                 await asyncio.sleep(0)
                 try:
                     domain_info = await asyncio.wait_for(domain_analyzer.get_domain_info(url), timeout=15.0)
@@ -115,11 +111,11 @@ async def run_analysis(url: str, job_id: str, manager: ConnectionManager, conten
 
             await manager.send_update("Scanning for exposed secrets big and small...", job_id)
             await asyncio.sleep(0)
-            secret_analysis_str = await analyzer.analyze_for_secrets(aggregated_content)
-
+            secret_analysis_str = await asyncio.to_thread(analyzer.analyze_for_secrets, aggregated_content)
+            
             await manager.send_update("Analyzing for scammy looking stuff...", job_id)
             await asyncio.sleep(0)
-            general_analysis_str = await analyzer.analyze_content(aggregated_content)
+            general_analysis_str = await asyncio.to_thread(analyzer.analyze_content, aggregated_content)
             
             await manager.send_update("Compiling final report...", job_id)
             await asyncio.sleep(0)
