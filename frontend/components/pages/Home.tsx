@@ -121,7 +121,6 @@ const Homepage: React.FC = () => {
             ))}
           </div>
         </Card>
-
       </div>
     </div>
   );
