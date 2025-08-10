@@ -9,13 +9,13 @@ from .website_fetcher import WebsiteFetcher
 from .analyzer import WebsiteAnalyzer
 from .domain_analyzer import DomainAnalyzer
 from ..models.schemas import AnalysisResult, Site
-from .websocket_manager import ConnectionManager
+from .websocket_manager import WebsocketConnectionManager
 from ..services.db import get_db_session
 
 
 def _calculate_overall_risk(analysis_data: dict) -> dict:
     """Calculates a new risk score and level based on all findings."""
-    severity_points = {"Low": 3, "Medium": 11, "High": 24, "Very High": 39}
+    severity_points = {"Low": 3, "Medium": 11, "High": 19, "Very High": 29}
 
     total_score = 0
     for finding in analysis_data.get("detailedAnalysis", []):
@@ -23,7 +23,7 @@ def _calculate_overall_risk(analysis_data: dict) -> dict:
 
     risk_score = min(total_score, 100)
 
-    if risk_score > 80:
+    if risk_score > 90:
         overall_risk = "Very High"
     elif risk_score > 55:
         overall_risk = "High"
@@ -63,7 +63,7 @@ async def _save_analysis_to_db(
 async def run_analysis(
     url: str,
     job_id: str,
-    manager: ConnectionManager,
+    wsman: WebsocketConnectionManager,
     content: str | None = None,
     scan_depth: str = "deep",
 ):
@@ -79,22 +79,22 @@ async def run_analysis(
             site = None
 
             if content:
-                await manager.send_update("Analyzing provided content...", job_id)
+                await wsman.send_update("Analyzing provided content...", job_id)
                 await asyncio.sleep(0)
                 aggregated_content = content
             else:
-                fetcher = WebsiteFetcher(url=url, job_id=job_id, manager=manager)
+                fetcher = WebsiteFetcher(url=url, job_id=job_id, wsman=wsman)
                 if scan_depth == "deep":
                     await fetcher.download_site(session=db)
                 else:
-                    await manager.send_update(f"Fetching content from {url}...", job_id)
+                    await wsman.send_update(f"Fetching content from {url}...", job_id)
                     aggregated_content = await fetcher.fetch_url_content(url)
 
                 statement = (
                     select(Site)
                     .options(selectinload(Site.sub_pages))  # type: ignore
                     .where(Site.url == url)
-                )  # type: ignore
+                )
                 result = await db.exec(statement)
                 site = result.first()
                 if not site and scan_depth == "deep":
@@ -105,7 +105,7 @@ async def run_analysis(
                         [sub_page.content for sub_page in site.sub_pages]
                     )
 
-                await manager.send_update(
+                await wsman.send_update(
                     "Using WHOIS to find out who owns this jawn...", job_id
                 )
                 await asyncio.sleep(0)
@@ -115,7 +115,7 @@ async def run_analysis(
                     )
                 except asyncio.TimeoutError:
                     logger.warning(f"WHOIS lookup for {url} timed out.")
-                    await manager.send_update(
+                    await wsman.send_update(
                         "WHOIS lookup timed out, continuing analysis...", job_id
                     )
                     domain_info = None
@@ -130,7 +130,7 @@ async def run_analysis(
                     await db.commit()
                     await db.refresh(site)
 
-            await manager.send_update(
+            await wsman.send_update(
                 "Scanning for exposed secrets big and small...", job_id
             )
             await asyncio.sleep(0)
@@ -138,13 +138,13 @@ async def run_analysis(
                 analyzer.analyze_for_secrets, aggregated_content
             )
 
-            await manager.send_update("Analyzing for scammy looking stuff...", job_id)
+            await wsman.send_update("Analyzing for scammy looking stuff...", job_id)
             await asyncio.sleep(0)
             general_analysis_str = await asyncio.to_thread(
                 analyzer.analyze_content, aggregated_content
             )
 
-            await manager.send_update("Compiling final report...", job_id)
+            await wsman.send_update("Compiling final report...", job_id)
             await asyncio.sleep(0)
 
             analysis_data = json.loads(
@@ -172,7 +172,9 @@ async def run_analysis(
                     {
                         "category": "Domain Intelligence",
                         "severity": severity,
-                        "description": f"Domain registered on {domain_info['creation_date']}. Age: {domain_age} days. Registrar: {domain_info.get('registrar', 'N/A')}.",
+                        "description": f"""Domain registered on {domain_info['creation_date']}. 
+                            Age: {domain_age} days. 
+                            Registrar: {domain_info.get('registrar', 'N/A')}.""",
                     },
                 )
 
@@ -180,13 +182,13 @@ async def run_analysis(
                 db=db, site=site, analysis_data=analysis_data
             )
 
-            await manager.send_final_result(
+            await wsman.send_final_result(
                 json.loads(final_result_model.model_dump_json()), job_id
             )
 
         except Exception as e:
             logger.error(f"Error in analysis task for job {job_id}: {e}")
-            await manager.send_update(f"An error occurred during analysis: {e}", job_id)
+            await wsman.send_update(f"An error occurred during analysis: {e}", job_id)
         finally:
-            manager.disconnect(job_id)
+            wsman.disconnect(job_id)
             logger.info(f"Analysis task for job {job_id} finished and disconnected.")

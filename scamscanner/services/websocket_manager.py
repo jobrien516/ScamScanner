@@ -2,7 +2,7 @@ from fastapi import WebSocket
 from typing import Dict, Any
 
 
-class ConnectionManager:
+class WebsocketConnectionManager:
     """Manages active WebSocket connections."""
 
     def __init__(self):
@@ -25,4 +25,4 @@ class ConnectionManager:
             await self.active_connections[job_id].send_json(result)
 
 
-manager = ConnectionManager()
+wsman = WebsocketConnectionManager()

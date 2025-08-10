@@ -42,29 +42,19 @@ export const pageContent = {
     dataPrivacy: {
       title: "Your Privacy Matters",
       description:
-        "ScamScanner is designed with your privacy in mind. We do not save, store, or share the source code of the websites you scan. The content is sent for analysis and then immediately discarded. We cache the analysis results for 24 hours for your convenience and our wallet. Your scan history only contains the analysis results, not the original source data.",
-    },
-    technology: {
-      title: "Technology We Use",
-      description:
-        "This application is a full-stack project built with a modern technology stack. The backend is powered by Python and FastAPI, handling web crawling and asynchronous tasks. The frontend is a responsive single-page application built with React and TypeScript, styled with Tailwind CSS. The AI model is powered by Google's Gemini 2.5 Pro, a cutting-edge language model that can understand and generate natural language.",
-    },
-    disclaimer: {
-      title: "Disclaimer",
-      description:
-        "ScamScanner is a tool and is not a substitute for a comprehensive antivirus or security suite. While it is designed to identify common threats, it may not catch every malicious site. Always exercise caution and use your best judgment when Browse online.",
+        "ScamScanner is designed with your privacy in mind. In fact, it's not designed to pay much attention to you at all. This solution is pretty much a one-way street. We don't care about your data. If you are entering an email somewhere, I have failed.",
     },
     purpose: {
       title: `First things first, "What is it?"`,
       isFor: {
         title: "What This App Is",
         description:
-          "ScamScanner is an educational tool designed to demonstrate how AI can be used to detect potential online threats. It serves as a powerful first-pass-filter to help you spot common red flags in a website's code.",
+          "Partially powered by Gemini 2.5 Pro and it's super sexy 2,000,000 token context window, ScamScanner downloads a website's source code and Gemini scans all of it at once to detect potential scams, phishing attempts, and other malicious activities.",
       },
       isNotFor: {
         title: "What This App Isn't",
         description:
-          "ScamScanner is not a replacement for a comprehensive antivirus or internet security suite. It cannot guarantee the detection of all threats and should be used as one of many tools in your online safety toolkit.",
+          "ScamScanner is not a replacement for a comprehensive antivirus or internet security suite as it is neither comprehensive nor secure.",
       },
     },
     resources: {

@@ -8,7 +8,7 @@ from sqlmodel import select
 from ..models.schemas import Site, SubPage
 from ..exceptions import WebsiteFetchError
 from ..models.constants import DEMO_SITES
-from .websocket_manager import ConnectionManager
+from .websocket_manager import WebsocketConnectionManager
 
 
 def _normalize_url(url: str) -> str:
@@ -18,10 +18,10 @@ def _normalize_url(url: str) -> str:
 
 
 class WebsiteFetcher:
-    def __init__(self, url: str, job_id: str, manager: ConnectionManager):
+    def __init__(self, url: str, job_id: str, wsman: WebsocketConnectionManager):
         self.url = _normalize_url(url)
         self.job_id = job_id
-        self.manager = manager
+        self.wsman = wsman
         self.visited_urls = set()
         self.urls_to_visit = [url]
         self.domain_name = urlparse(url).netloc
@@ -120,7 +120,7 @@ class WebsiteFetcher:
                     continue
 
                 self.visited_urls.add(current_url)
-                await self.manager.send_update(
+                await self.wsman.send_update(
                     f"Crawling {processed_urls}/{total_urls_found}: {current_url}",
                     self.job_id,
                 )
@@ -176,7 +176,7 @@ class WebsiteFetcher:
                 except WebsiteFetchError:
                     logger.warning(f"Could not download {current_url}. Skipping.")
 
-        await self.manager.send_update(
+        await self.wsman.send_update(
             "Crawl complete. Analyzing content...", self.job_id
         )
         logger.info("\nDownload complete.")

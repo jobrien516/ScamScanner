@@ -9,7 +9,9 @@ type UrlInputProps = {
 
 const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => {
     const [url, setUrl] = useState('');
-    const [scanDepth, setScanDepth] = useState('deep');
+    const [scanDepth, setScanDepth] = useState(() => {
+        return localStorage.getItem('defaultScanDepth') || 'soft';
+    });
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();

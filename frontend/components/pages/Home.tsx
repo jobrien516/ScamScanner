@@ -1,7 +1,7 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { pageContent } from '@/constants';
-import { CheckCircleIcon, LockIcon, CodeIcon, AlertIcon, LinkIcon, CheckIcon, XIcon } from '@/components/Icons';
+import { CheckCircleIcon, LockIcon, LinkIcon, CheckIcon, XIcon } from '@/components/Icons';
 import Card from '@/components/Card';
 
 const Homepage: React.FC = () => {
@@ -12,14 +12,15 @@ const Homepage: React.FC = () => {
   };
 
   return (
-    <div className="py-8 max-w-6xl mx-auto animate-fade-in">
+    <div className="py-8 max-w-6xl text-xl mx-auto animate-fade-in">
       {/* Before the Button */}
       <div className="mx-auto text-center">
-        <Card title={pageContent.home.title}>
+        {/* <Card title={pageContent.home.title}>
           <p className="mt-6 text-lg text-slate-400 max-w-3xl mx-auto">
             {pageContent.home.subtitle}
           </p>
-        </Card>
+        </Card> */}
+
         {/* Button */}
         <div className="mt-4">
           <button
@@ -42,7 +43,7 @@ const Homepage: React.FC = () => {
                 <CheckIcon />
               </div>
               <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.home.purpose.isFor.title}</h3>
-              <p className="text-slate-300 py-4 mx-4">{pageContent.home.purpose.isFor.description}</p>
+              <p className="text-slate-300 text-2xl py-4 mx-4">{pageContent.home.purpose.isFor.description}</p>
             </div>
             {/* IS NOT */}
             <div className="flex flex-col items-center border border-slate-700/50 rounded-xl">
@@ -50,13 +51,13 @@ const Homepage: React.FC = () => {
                 <XIcon />
               </div>
               <h3 className="text-xl font-bold text-slate-100 mt-4">{pageContent.home.purpose.isNotFor.title}</h3>
-              <p className="text-slate-300 py-4 mt-2 mx-4">{pageContent.home.purpose.isNotFor.description}</p>
+              <p className="text-slate-300 text-2xl py-4 mt-2 mx-4">{pageContent.home.purpose.isNotFor.description}</p>
             </div>
           </div>
         </Card>
 
         {/* Web Safety Section */}
-        <Card title={pageContent.home.webSafety.title} className="h-full">
+        <Card title={pageContent.home.webSafety.title} className="text-3xl h-full">
           <ul className="space-y-4 text-left">
             {pageContent.home.webSafety.tips.map((tip, index) => (
               <li key={index} className="flex items-start gap-4">
@@ -73,7 +74,7 @@ const Homepage: React.FC = () => {
         </Card>
 
         {/* Data Privacy Section */}
-        <Card className="h-full text-center">
+        <Card className="h-full text-3xl text-center">
           <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
             <LockIcon />
           </div>
@@ -81,23 +82,6 @@ const Homepage: React.FC = () => {
           <p className="text-slate-300 mt-4 text-left">{pageContent.home.dataPrivacy.description}</p>
         </Card>
 
-        {/* Technology Section */}
-        <Card className="h-full text-center">
-          <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
-            <CodeIcon />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.home.technology.title}</h2>
-          <p className="text-slate-300 mt-4 text-left">{pageContent.home.technology.description}</p>
-        </Card>
-
-        {/* Disclaimer Section */}
-        <Card className="h-full text-center">
-          <div className='inline-block p-3 bg-slate-700/50 rounded-full'>
-            <AlertIcon />
-          </div>
-          <h2 className="text-2xl font-bold text-slate-100 mt-4">{pageContent.home.disclaimer.title}</h2>
-          <p className="text-slate-300 mt-4 text-left">{pageContent.home.disclaimer.description}</p>
-        </Card>
 
         {/* Resources Section */}
         <Card title={pageContent.home.resources.title}>

@@ -34,13 +34,13 @@ const AnalysisResultDisplay: React.FC<AnalysisResultProps> = ({ result, error, o
     const getRiskMessage = (riskLevel: RiskLevel): string => {
         switch (riskLevel) {
             case RiskLevel.Low:
-                return "The risk is low. The website appears to be safe.";
+                return "Green. The website seems like it might be safe to interact with but trust nothing.";
             case RiskLevel.Medium:
-                return "The risk is medium. Caution is advised.";
+                return "Yellow. Let it mellow. Caution is advised.";
             case RiskLevel.High:
-                return "The risk is high. Be careful when interacting with this website.";
+                return "Red. This thing is smelling phishy.";
             case RiskLevel.VeryHigh:
-                return "The risk is very high. It is recommended to avoid this website.";
+                return "Black. The scoring system is whack and so is whatever that was.";
             case RiskLevel.Unknown:
             default:
                 return "The risk level is unknown. Proceed with caution.";
