@@ -2,7 +2,7 @@ import React from 'react';
 import { pageContent } from '@/constants';
 import Card from '@/components/Card';
 
-const SupportPage: React.FC = () => {
+const Support: React.FC = () => {
   return (
     <div className="max-w-3xl mx-auto animate-fade-in text-center">
       <Card title={pageContent.support.title}>
@@ -34,4 +34,4 @@ const SupportPage: React.FC = () => {
   );
 };
 
-export default SupportPage;
+export default Support;

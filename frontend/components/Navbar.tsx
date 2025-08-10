@@ -5,11 +5,11 @@ import { ShieldIcon } from './Icons';
 const Navbar: React.FC = () => {
     const activeLinkStyle = {
         color: '#ffffff',
-        backgroundColor: '#1e293b' // slate-800
+        backgroundColor: '' // slate-800
     };
 
     return (
-        <nav className="bg-slate-800/50 max-w-full mx-auto rounded-lg p-2 flex justify-between items-center border border-slate-700">
+        <nav className="bg-slate-800/50 max-w-screen-xl mx-auto rounded-lg p-2 flex justify-between items-center border border-slate-700">
             <NavLink to="/" className="flex items-center gap-3">
                 <ShieldIcon />
                 <span className="text-xl font-bold text-slate-100 tracking-tight">ScamScanner</span>

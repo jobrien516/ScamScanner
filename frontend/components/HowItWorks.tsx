@@ -4,7 +4,7 @@ import Card from './Card';
 
 const HowItWorks: React.FC = () => {
   return (
-    <Card title={pageContent.howItWorks.title} className="max-w-5xl mx-auto animate-fade-in">
+    <Card title={pageContent.howItWorks.title} className="max-w-5xl mx-auto items-center animate-fade-in">
       <div className="grid md:grid-cols-2 gap-x-8 gap-y-10 text-left">
         {pageContent.howItWorks.steps.map((step, index) => (
           <div key={index} className="flex gap-4">

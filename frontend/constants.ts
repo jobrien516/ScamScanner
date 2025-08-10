@@ -14,7 +14,7 @@ export const pageContent = {
       "Powered by Google Gemini and an Over-Caffeinated, Under-Rested Developer.",
     copyright: "© 2025 AI Scam Site Scanner. For educational purposes only.",
   },
-  landing: {
+  home: {
     title: "Empowering Your Digital Safety",
     subtitle:
       "ScamScanner uses the power of AI to analyze website source code, helping you identify potential scams, phishing attempts, and malicious scripts before they can cause harm.",

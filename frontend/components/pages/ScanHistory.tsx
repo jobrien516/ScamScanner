@@ -6,7 +6,7 @@ import Spinner from '@/components/Spinner';
 
 const HistoryItem: React.FC<{ result: HistoryAnalysisResult }> = ({ result }) => {
   return (
-    <div className="bg-slate-800/50 p-4 rounded-lg border border-slate-700 flex justify-between items-center">
+    <div className="bg-slate-800/50 p-4 max-w-5xl mx-auto rounded-lg border border-slate-700 flex justify-between items-center">
       <div>
         <p className="font-mono text-blue-300 break-all">{result.site_url}</p>
         <p className="text-sm text-slate-400 mt-1">
@@ -21,7 +21,7 @@ const HistoryItem: React.FC<{ result: HistoryAnalysisResult }> = ({ result }) =>
   );
 };
 
-const HistoryPage: React.FC = () => {
+const ScanHistory: React.FC = () => {
   const [history, setHistory] = useState<HistoryAnalysisResult[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -75,4 +75,4 @@ const HistoryPage: React.FC = () => {
   );
 };
 
-export default HistoryPage;
+export default ScanHistory;

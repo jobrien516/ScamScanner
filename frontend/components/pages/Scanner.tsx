@@ -14,7 +14,7 @@ const getWebSocketURL = () => {
   return BACKEND_API_URL.replace(/^http/, 'ws');
 };
 
-const ScannerPage: React.FC = () => {
+const Scanner: React.FC = () => {
   const [view, setView] = useState<ViewState>(ViewState.START);
   const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
@@ -188,4 +188,4 @@ const ScannerPage: React.FC = () => {
   );
 };
 
-export default ScannerPage;
+export default Scanner;
