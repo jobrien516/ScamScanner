@@ -4,32 +4,71 @@ ScamScanner is an AI-powered tool that analyzes a website's source code to detec
 
 ## Features
 
-  * **Multi-faceted AI Analysis**: Leverages Google's Gemini API for two distinct scans: one for general security threats (phishing, malicious scripts) and another specifically for exposed secrets (API keys, credentials).
-  * **Recursive Web Crawler**: Intelligently crawls the target website, downloading relevant HTML and JavaScript content from the same domain while ignoring unnecessary files like images and stylesheets.
-  * **Domain Intelligence**: Performs a WHOIS lookup on the target domain to provide crucial context like domain age and registrar information, which are key indicators of a site's legitimacy.
-  * **Real-time Progress Updates**: Uses WebSockets to provide a live log of the crawling and analysis process, so you're never left wondering what's happening.
-  * **Complete Analysis History**: All scan results are saved to a database and can be viewed on a dedicated history page.
-  * **Flexible Input**: Analyze websites via a live URL or by manually pasting or uploading source code.
-  * **Downloadable Reports**: Export your detailed analysis results as either a Markdown or a plain text file.
+- **Multi-faceted AI Analysis**: Leverages Google's Gemini API for two distinct scans: one for general security threats (phishing, malicious scripts) and another specifically for exposed secrets (API keys, credentials).
+- **Recursive Web Crawler**: Intelligently crawls the target website, downloading relevant HTML and JavaScript content from the same domain while ignoring unnecessary files like images and stylesheets.
+- **Domain Intelligence**: Performs a WHOIS lookup on the target domain to provide crucial context like domain age and registrar information, which are key indicators of a site's legitimacy.
+- **Real-time Progress Updates**: Uses WebSockets to provide a live log of the crawling and analysis process, so you're never left wondering what's happening.
+- **Complete Analysis History**: All scan results are saved to a database and can be viewed on a dedicated history page.
+- **Flexible Input**: Analyze websites via a live URL or by manually pasting or uploading source code.
+- **Downloadable Reports**: Export your detailed analysis results as either a Markdown or a plain text file.
+
+## Workflow Diagram
+
+```mermaid
+---
+config:
+  theme: redux
+  layout: dagre
+---
+
+flowchart LR
+ subgraph subGraph0["User Interaction"]
+        B{"ScamScanner Backend Receives API Request"}
+        A["User Submits Website URL"]
+  end
+ subgraph subGraph1["Data Collection & Analysis"]
+        C@{ label: "<b>Website Crawling</b> <br> System gathers website's source code" }
+        D["<b>Domain Intelligence</b> <br> Performs background check on the domain"]
+  end
+ subgraph subGraph2["Core AI Analysis"]
+        E@{ label: "<b>Dual AI-Powered Threat Analysis</b> <br> Google's AI scans for scam tactics and exposed secrets" }
+  end
+ subgraph Reporting["Reporting"]
+        F["<b>Risk Assessment</b><br> AI findings and domain data are compiled into a risk score"]
+        G["<b>User Receives Security Report</b> <br> A detailed, actionable report is presented to the user"]
+  end
+    A --> B
+    B --> C & D
+    C --> E
+    D --> F
+    E --> F
+    F --> G
+    C@{ shape: rect}
+    D@{ shape: rect}
+    E@{ shape: rect}
+    style A fill:#D6EAF8,stroke:#333,stroke-width:2px
+    style E fill:#FADBD8,stroke:#C0392B,stroke-width:2px
+    style G fill:#D5F5E3,stroke:#333,stroke-width:2px
+```
 
 ## Tech Stack
 
-  * **Backend**:
-      * Python 3.12
-      * FastAPI (for the web framework)
-      * SQLModel (combined SQLAlchemy and Pydantic)
-      * `python-whois` (for domain lookups)
-      * Uvicorn & Gunicorn (as the ASGI server)
-      * Google GenAI (for AI-driven insights)
-  * **Frontend**:
-      * React (with TypeScript)
-      * Vite (for the build tooling)
-      * Tailwind CSS (for styling)
-      * React Router (for page navigation)
-  * **Database**:
-      * SQLite
-  * **Containerization**:
-      * Docker & Docker Compose
+- **Backend**:
+  - Python 3.12
+  - FastAPI (for the web framework)
+  - SQLModel (combined SQLAlchemy and Pydantic)
+  - `python-whois` (for domain lookups)
+  - Uvicorn & Gunicorn (as the ASGI server)
+  - Google GenAI (for AI-driven insights)
+- **Frontend**:
+  - React (with TypeScript)
+  - Vite (for the build tooling)
+  - Tailwind CSS (for styling)
+  - React Router (for page navigation)
+- **Database**:
+  - SQLite
+- **Containerization**:
+  - Docker & Docker Compose
 
 ## Getting Started
 
@@ -37,7 +76,7 @@ Run the application locally with Docker.
 
 ### Prerequisites
 
-  * **Docker**: Ensure you have [Docker](https://docs.docker.com/get-docker/) and Docker Compose installed on your system.
+- **Docker**: Ensure you have [Docker](https://docs.docker.com/get-docker/) and Docker Compose installed on your system.
 
 ### Environment Setup
 
@@ -64,8 +103,8 @@ This will build the Docker images for both the frontend and backend, install all
 
 Once the containers are running, you can access the application:
 
-  * **Frontend**: [http://localhost:5173](https://www.google.com/search?q=http://localhost:5173)
-  * **Backend API**: [http://localhost:8000](https://www.google.com/search?q=http://localhost:8000)
+- **Frontend**: [http://localhost:5173](https://www.google.com/search?q=http://localhost:5173)
+- **Backend API**: [http://localhost:8000](https://www.google.com/search?q=http://localhost:8000)
 
 ## How to Use
 
