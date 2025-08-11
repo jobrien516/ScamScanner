@@ -17,23 +17,23 @@ ScamScanner is an AI-powered tool that analyzes a website's source code to detec
 ```mermaid
 ---
 config:
-  theme: redux
+  theme: default
   layout: dagre
+  look: neo
 ---
-
 flowchart LR
- subgraph subGraph0["User Interaction"]
-        B{"ScamScanner Backend Receives API Request"}
-        A["User Submits Website URL"]
+ subgraph subGraph0["<b>User Interaction</b>"]
+        B{"Backend Receives API Request"}
+        A["<b>Start</b>: User Submits Website URL"]
   end
- subgraph subGraph1["Data Collection & Analysis"]
+ subgraph subGraph1["<b>Data Collection &amp; Analysis</b>"]
         C@{ label: "<b>Website Crawling</b> <br> System gathers website's source code" }
         D["<b>Domain Intelligence</b> <br> Performs background check on the domain"]
   end
- subgraph subGraph2["Core AI Analysis"]
+ subgraph subGraph2["<b>Core AI Analysis</b>"]
         E@{ label: "<b>Dual AI-Powered Threat Analysis</b> <br> Google's AI scans for scam tactics and exposed secrets" }
   end
- subgraph Reporting["Reporting"]
+ subgraph Reporting["<b>Reporting</b>"]
         F["<b>Risk Assessment</b><br> AI findings and domain data are compiled into a risk score"]
         G["<b>User Receives Security Report</b> <br> A detailed, actionable report is presented to the user"]
   end
@@ -46,9 +46,18 @@ flowchart LR
     C@{ shape: rect}
     D@{ shape: rect}
     E@{ shape: rect}
-    style A fill:#D6EAF8,stroke:#333,stroke-width:2px
-    style E fill:#FADBD8,stroke:#C0392B,stroke-width:2px
+    style B stroke-width:2px,stroke-dasharray: 0,stroke:#000000
+    style A fill:#D6EAF8,stroke:#333,stroke-width:2px,stroke-dasharray: 0
+    style C stroke:#000000,stroke-width:2px,stroke-dasharray: 0
+    style D stroke-width:2px,stroke-dasharray: 0,stroke:#000000
+    style E fill:#FADBD8,stroke:#000000,stroke-width:2px,stroke-dasharray: 0
+    style F stroke:#000000,stroke-width:2px,stroke-dasharray: 0
     style G fill:#D5F5E3,stroke:#333,stroke-width:2px
+    style subGraph0 stroke:#000000
+    style subGraph1 stroke:#000000
+    style subGraph2 stroke:#000000
+    style Reporting stroke:#000000
+
 ```
 
 ## Tech Stack
