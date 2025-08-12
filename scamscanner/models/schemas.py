@@ -75,6 +75,8 @@ class UrlRequest(SQLModel):
 
     url: str
     scan_depth: Optional[str] = "deep"
+    use_secrets_scanner: Optional[bool] = True
+    use_domain_analyzer: Optional[bool] = True
 
 
 class HtmlRequest(SQLModel):
@@ -88,6 +90,8 @@ class Settings(SQLModel, table=True):
     id: Optional[int] = Field(default=1, primary_key=True)
     gemini_api_key: Optional[str] = None
     max_output_tokens: int = 8192
+    default_use_secrets_scanner: bool = Field(default=True)
+    default_use_domain_analyzer: bool = Field(default=True)
 
 # Resolve forward references to help type checkers
 AnalysisResult.model_rebuild()

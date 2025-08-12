@@ -25,13 +25,20 @@ export const getHistory = async (): Promise<HistoryAnalysisResult[]> => {
 
 export const analyzeUrl = async (
   url: string,
-  scan_depth: string
+  scan_depth: string,
+  use_secrets_scanner: boolean,
+  use_domain_analyzer: boolean
 ): Promise<{ job_id: string }> => {
   try {
     const response = await fetch(`${BACKEND_API_URL}/analyze`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, scan_depth }),
+      body: JSON.stringify({
+        url,
+        scan_depth,
+        use_secrets_scanner,
+        use_domain_analyzer,
+      }),
     });
 
     if (!response.ok) {

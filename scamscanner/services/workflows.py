@@ -1,20 +1,3 @@
-# import json
-# import asyncio
-# from sqlmodel.ext.asyncio.session import AsyncSession
-# from sqlmodel import select
-# from sqlalchemy.orm import selectinload
-# from loguru import logger
-
-# from .website_fetcher import WebsiteFetcher
-# from .analyzer import WebsiteAnalyzer
-# from .domain_analyzer import DomainAnalyzer
-# from .pipe import Pipe
-# from ..models.schemas import AnalysisResult, Site
-# from .websocket_manager import WebsocketConnectionManager
-# from ..services.db import get_db_session
-
-
-
 import json
 import asyncio
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -86,6 +69,8 @@ async def run_analysis(
     wsman: WebsocketConnectionManager,
     content: str | None = None,
     scan_depth: str = "deep",
+    use_secrets_scanner: bool = True,
+    use_domain_analyzer: bool = True,
 ):
     """
     The main analysis workflow run as a background task.
@@ -125,20 +110,21 @@ async def run_analysis(
                         [sub_page.content for sub_page in site.sub_pages]
                     )
 
-                await wsman.send_update(
-                    "Using WHOIS to find out who owns this jawn...", job_id
-                )
-                await asyncio.sleep(0)
-                try:
-                    domain_info = await asyncio.wait_for(
-                        domain_analyzer.get_domain_info(url), timeout=15.0
-                    )
-                except asyncio.TimeoutError:
-                    logger.warning(f"WHOIS lookup for {url} timed out.")
+                if use_domain_analyzer:
                     await wsman.send_update(
-                        "WHOIS lookup timed out, continuing analysis...", job_id
+                        "Using WHOIS to find out who owns this jawn...", job_id
                     )
-                    domain_info = None
+                    await asyncio.sleep(0)
+                    try:
+                        domain_info = await asyncio.wait_for(
+                            domain_analyzer.get_domain_info(url), timeout=15.0
+                        )
+                    except asyncio.TimeoutError:
+                        logger.warning(f"WHOIS lookup for {url} timed out.")
+                        await wsman.send_update(
+                            "WHOIS lookup timed out, continuing analysis...", job_id
+                        )
+                        domain_info = None
 
             if not site:
                 site_statement = select(Site).where(Site.url == url)
@@ -150,11 +136,13 @@ async def run_analysis(
                     await db.commit()
                     await db.refresh(site)
 
-            await wsman.send_update(
-                "Scanning for exposed secrets big and small...", job_id
-            )
-            await asyncio.sleep(0)
-            secret_analysis_str = await analyzer.analyze_for_secrets(aggregated_content, db=db)
+            secret_analysis_str = "{}"
+            if use_secrets_scanner:
+                await wsman.send_update(
+                    "Scanning for exposed secrets big and small...", job_id
+                )
+                await asyncio.sleep(0)
+                secret_analysis_str = await analyzer.analyze_for_secrets(aggregated_content, db=db)
 
 
             await wsman.send_update("Analyzing for scammy looking stuff...", job_id)
@@ -171,9 +159,10 @@ async def run_analysis(
                 secret_analysis_str.strip().removeprefix("```json").removesuffix("```")
             )
 
-            analysis_data["detailedAnalysis"].extend(
-                secret_analysis.get("detailedAnalysis", [])
-            )
+            if "detailedAnalysis" in secret_analysis:
+                analysis_data["detailedAnalysis"].extend(
+                    secret_analysis.get("detailedAnalysis", [])
+                )
             analysis_data["domainInfo"] = domain_info
 
             if domain_info and domain_info.get("domain_age_days") is not None:

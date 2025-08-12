@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { SearchIcon } from './Icons';
 
 type UrlInputProps = {
-    onScan: (url: string, scanDepth: string) => void | Promise<void>;
+    onScan: (url: string, scanDepth: string, useSecretsScanner: boolean, useDomainAnalyzer: boolean) => void | Promise<void>;
     onUploadClick: () => void;
     error?: string | null;
 };
@@ -12,11 +12,13 @@ const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => 
     const [scanDepth, setScanDepth] = useState(() => {
         return localStorage.getItem('defaultScanDepth') || 'soft';
     });
+    const [useSecretsScanner, setUseSecretsScanner] = useState(true);
+    const [useDomainAnalyzer, setUseDomainAnalyzer] = useState(true);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (url.trim()) {
-            onScan(url, scanDepth);
+            onScan(url, scanDepth, useSecretsScanner, useDomainAnalyzer);
         }
     };
 
@@ -51,6 +53,26 @@ const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => 
                         <SearchIcon />
                         <span>Scan Website</span>
                     </button>
+                </div>
+                <div className="mt-4 flex items-center gap-4">
+                    <label className="flex items-center text-slate-300">
+                        <input
+                            type="checkbox"
+                            checked={useSecretsScanner}
+                            onChange={(e) => setUseSecretsScanner(e.target.checked)}
+                            className="mr-2"
+                        />
+                        Scan for Exposed Secrets
+                    </label>
+                    <label className="flex items-center text-slate-300">
+                        <input
+                            type="checkbox"
+                            checked={useDomainAnalyzer}
+                            onChange={(e) => setUseDomainAnalyzer(e.target.checked)}
+                            className="mr-2"
+                        />
+                        Analyze Domain Intelligence
+                    </label>
                 </div>
                 {error && (
                     <p className="mt-4 text-center text-red-400 bg-red-900/50 p-3 rounded-md border border-red-500/50">

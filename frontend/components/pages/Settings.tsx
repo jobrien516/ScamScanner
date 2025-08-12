@@ -25,7 +25,8 @@ const Settings: React.FC = () => {
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         if (!settings) return;
-        const { name, value } = e.target;
+        const { name, type } = e.target;
+        const value = type === 'checkbox' ? (e.target as HTMLInputElement).checked : e.target.value;
         setSettings({ ...settings, [name]: value });
     };
 
@@ -81,6 +82,32 @@ const Settings: React.FC = () => {
                         </div>
                     </div>
 
+                    {/* Default Scan Options */}
+                    <div>
+                        <h3 className="text-lg font-semibold text-slate-200 border-b border-slate-700 pb-2 mb-4">Default Scan Options</h3>
+                        <div className="space-y-4">
+                            <label className="flex items-center text-slate-300 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="default_use_secrets_scanner"
+                                    checked={settings?.default_use_secrets_scanner ?? true}
+                                    onChange={handleInputChange}
+                                    className="h-4 w-4 rounded border-slate-500 bg-slate-700 text-blue-500 focus:ring-blue-500"
+                                />
+                                <span className="ml-3">Enable Secrets Scanner by default</span>
+                            </label>
+                            <label className="flex items-center text-slate-300 cursor-pointer">
+                                <input
+                                    type="checkbox"
+                                    name="default_use_domain_analyzer"
+                                    checked={settings?.default_use_domain_analyzer ?? true}
+                                    onChange={handleInputChange}
+                                    className="h-4 w-4 rounded border-slate-500 bg-slate-700 text-blue-500 focus:ring-blue-500"
+                                />
+                                <span className="ml-3">Enable Domain Analyzer by default</span>
+                            </label>
+                        </div>
+                    </div>
                 </div>
 
                 {/* Save Button */}

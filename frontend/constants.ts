@@ -103,9 +103,14 @@ export const pageContent = {
           "The system recursively crawls the website, downloading the content of linked pages and scripts from the same domain.",
       },
       {
+        title: "Domain Intelligence (Optional)",
+        description:
+          "A WHOIS lookup is performed to gather crucial context about the domain, such as its age and registrar, which are key indicators of legitimacy.",
+      },
+      {
         title: "Dual AI Analysis",
         description:
-          "All collected content is sent to the Gemini API for two separate analyses: one for general scam tactics and another specifically for exposed secrets.",
+          "All collected content is sent to the Gemini API for a comprehensive analysis of general scam tactics. If enabled, a separate, specialized scan for exposed secrets is also performed.",
       },
       {
         title: "Receive Your Report",

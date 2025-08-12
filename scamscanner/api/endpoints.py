@@ -55,7 +55,13 @@ async def analyze_url(request: UrlRequest, background_tasks: BackgroundTasks):
     """
     job_id = str(uuid.uuid4())
     background_tasks.add_task(
-        run_analysis, request.url, job_id, wsman, scan_depth=str(request.scan_depth)
+        run_analysis,
+        request.url,
+        job_id,
+        wsman,
+        scan_depth=str(request.scan_depth),
+        use_secrets_scanner=True if request.use_secrets_scanner is None else request.use_secrets_scanner,
+        use_domain_analyzer=True if request.use_domain_analyzer is None else request.use_domain_analyzer,
     )
     return {"job_id": job_id}
 
@@ -109,6 +115,8 @@ async def update_settings(new_settings: Settings):
         
         settings.gemini_api_key = new_settings.gemini_api_key
         settings.max_output_tokens = new_settings.max_output_tokens
+        settings.default_use_secrets_scanner = new_settings.default_use_secrets_scanner
+        settings.default_use_domain_analyzer = new_settings.default_use_domain_analyzer
         db.add(settings)
         await db.commit()
         await db.refresh(settings)

@@ -2,6 +2,8 @@ export interface AppSettings {
   id: number;
   gemini_api_key?: string | null;
   max_output_tokens: number;
+  default_use_secrets_scanner: boolean;
+  default_use_domain_analyzer: boolean;
 }
 
 export enum RiskLevel {
