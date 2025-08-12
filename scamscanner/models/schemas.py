@@ -83,7 +83,14 @@ class HtmlRequest(SQLModel):
     html: str
 
 
+class Settings(SQLModel, table=True):
+    """Stores application settings in the database."""
+    id: Optional[int] = Field(default=1, primary_key=True)
+    gemini_api_key: Optional[str] = None
+    max_output_tokens: int = 8192
+
 # Resolve forward references to help type checkers
 AnalysisResult.model_rebuild()
 SubPage.model_rebuild()
 Site.model_rebuild()
+Settings.model_rebuild()

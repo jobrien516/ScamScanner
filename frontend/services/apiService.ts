@@ -1,5 +1,5 @@
-import type { HistoryAnalysisResult } from "@/types";
 import { BACKEND_API_URL } from "@/constants";
+import type { HistoryAnalysisResult, AppSettings } from "@/types";
 
 // const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
 
@@ -62,6 +62,39 @@ export const startHtmlAnalysis = async (
     return await response.json();
   } catch (error) {
     console.error("Error in startHtmlAnalysis:", error);
+    throw error;
+  }
+};
+
+export const getSettings = async (): Promise<AppSettings> => {
+  try {
+    const response = await fetch(`${BACKEND_API_URL}/settings`);
+    if (!response.ok) {
+      throw new Error("Failed to fetch settings");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error in getSettings:", error);
+    throw error;
+  }
+};
+
+export const updateSettings = async (
+  settings: AppSettings
+): Promise<AppSettings> => {
+  try {
+    const response = await fetch(`${BACKEND_API_URL}/settings`, {
+      method: "PUT",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(settings),
+    });
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || "Failed to update settings");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error in updateSettings:", error);
     throw error;
   }
 };

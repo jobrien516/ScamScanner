@@ -15,12 +15,6 @@ const Homepage: React.FC = () => {
     <div className="py-8 max-w-6xl text-xl mx-auto animate-fade-in">
       {/* Before the Button */}
       <div className="mx-auto text-center">
-        {/* <Card title={pageContent.home.title}>
-          <p className="mt-6 text-lg text-slate-400 max-w-3xl mx-auto">
-            {pageContent.home.subtitle}
-          </p>
-        </Card> */}
-
         {/* Button */}
         <div className="mt-4">
           <button

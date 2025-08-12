@@ -2,7 +2,6 @@
 Defines custom exception classes for the ScamScanner application.
 """
 
-
 class WebsiteFetchError(Exception):
     """
     Custom exception raised when there's an error fetching a website's content.

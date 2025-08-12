@@ -1,3 +1,9 @@
+export interface AppSettings {
+  id: number;
+  gemini_api_key?: string | null;
+  max_output_tokens: number;
+}
+
 export enum RiskLevel {
   Low = "Low",
   Medium = "Medium",

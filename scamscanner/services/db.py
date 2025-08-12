@@ -1,12 +1,13 @@
 import os
 import json
-from sqlmodel import SQLModel, main
+from sqlmodel import SQLModel, main, select
 from sqlalchemy.ext.asyncio import create_async_engine
 from typing import AsyncGenerator
 from sqlmodel.ext.asyncio.session import AsyncSession
 from loguru import logger
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
+from ..models.schemas import Settings 
 
 load_dotenv()
 
@@ -33,12 +34,19 @@ async def init_db():
     only if they do not already exist.
     """
     async with engine.begin() as conn:
-        # if "sqlite" in DATABASE_URL:
-        #      logger.warning("Development mode: Dropping and recreating all tables.")
-        #      await conn.run_sync(SQLModel.metadata.drop_all)
         await conn.run_sync(SQLModel.metadata.create_all)
-    logger.info("Database tables verified/created successfully.")
 
+    # Ensure a default settings row exists
+    async with get_db_session() as session:
+        statement = select(Settings).where(Settings.id == 1)
+        result = await session.exec(statement)
+        settings = result.first()
+        if not settings:
+            session.add(Settings(id=1))
+            await session.commit()
+            logger.info("Default settings row created.")
+            
+    logger.info("Database tables verified/created successfully.")
 
 @asynccontextmanager
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:

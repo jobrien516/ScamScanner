@@ -15,9 +15,10 @@ from ..models.schemas import UrlRequest, HtmlRequest, AnalysisResult
 from ..services.db import get_db_session
 from ..services.workflows import run_analysis
 from ..services.websocket_manager import wsman
+from ..models.schemas import Settings
 
 router = APIRouter()
-
+# aw = AnalysisWorkflow(wsman)
 
 @router.get("/history", response_model=List[AnalysisResult])
 async def get_analysis_history():
@@ -87,3 +88,28 @@ async def get_websocket(websocket: WebSocket, job_id: str):
     except WebSocketDisconnect:
         wsman.disconnect(job_id)
         logger.info(f"WebSocket disconnected for job {job_id}")
+
+
+@router.get("/settings", response_model=Settings)
+async def get_settings():
+    """Retrieves the current application settings from the database."""
+    async with get_db_session() as db:
+        settings = await db.get(Settings, 1)
+        if not settings:
+            raise HTTPException(status_code=404, detail="Settings not found.")
+        return settings
+
+@router.put("/settings", response_model=Settings)
+async def update_settings(new_settings: Settings):
+    """Updates the application settings in the database."""
+    async with get_db_session() as db:
+        settings = await db.get(Settings, 1)
+        if not settings:
+            raise HTTPException(status_code=404, detail="Settings not found.")
+        
+        settings.gemini_api_key = new_settings.gemini_api_key
+        settings.max_output_tokens = new_settings.max_output_tokens
+        db.add(settings)
+        await db.commit()
+        await db.refresh(settings)
+        return settings
