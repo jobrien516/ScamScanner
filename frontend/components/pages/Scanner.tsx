@@ -80,14 +80,14 @@ const Scanner: React.FC = () => {
     setIsStopped(false);
   }, []);
 
-  const handleUrlSubmit = useCallback(async (url: string, scanDepth: string, useSecretsScanner: boolean, useDomainAnalyzer: boolean) => {
+  const handleUrlSubmit = useCallback(async (url: string, scanDepth: string, useDomainAnalyzer: boolean) => {
     startAnalysis();
     setCurrentUrl(url);
     try {
       const normalizedUrl = url.trim().replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
       const response = DEMO_SITES[normalizedUrl]
         ? await startHtmlAnalysis(DEMO_SITES[normalizedUrl])
-        : await analyzeUrl(url, scanDepth, useSecretsScanner, useDomainAnalyzer);
+        : await analyzeUrl(url, scanDepth, useDomainAnalyzer);
 
       setJobId(response.job_id);
     } catch (err) {

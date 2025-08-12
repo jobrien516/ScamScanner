@@ -75,7 +75,6 @@ class UrlRequest(SQLModel):
 
     url: str
     scan_depth: Optional[str] = "deep"
-    use_secrets_scanner: Optional[bool] = True
     use_domain_analyzer: Optional[bool] = True
 
 
@@ -83,6 +82,11 @@ class HtmlRequest(SQLModel):
     """Pydantic model for HTML content-based requests."""
 
     html: str
+
+class SecretsRequest(SQLModel):
+    """Pydantic model for secrets scanning requests."""
+    content: Optional[str] = None
+    url: Optional[str] = None
 
 
 class Settings(SQLModel, table=True):

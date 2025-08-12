@@ -2,23 +2,23 @@ import React, { useState } from 'react';
 import { SearchIcon } from './Icons';
 
 type UrlInputProps = {
-    onScan: (url: string, scanDepth: string, useSecretsScanner: boolean, useDomainAnalyzer: boolean) => void | Promise<void>;
+    onScan: (url: string, scanDepth: string, useDomainAnalyzer: boolean) => void | Promise<void>;
     onUploadClick: () => void;
     error?: string | null;
+    showOptions?: boolean;
 };
 
-const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => {
+const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error, showOptions = true }) => {
     const [url, setUrl] = useState('');
     const [scanDepth, setScanDepth] = useState(() => {
         return localStorage.getItem('defaultScanDepth') || 'soft';
     });
-    const [useSecretsScanner, setUseSecretsScanner] = useState(true);
     const [useDomainAnalyzer, setUseDomainAnalyzer] = useState(true);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (url.trim()) {
-            onScan(url, scanDepth, useSecretsScanner, useDomainAnalyzer);
+            onScan(url, scanDepth, useDomainAnalyzer);
         }
     };
 
@@ -37,14 +37,16 @@ const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => 
                         placeholder="e.g., demo-scam.com"
                         className="flex-grow bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
                     />
-                    <select
-                        value={scanDepth}
-                        onChange={(e) => setScanDepth(e.target.value)}
-                        className="bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
-                    >
-                        <option value="deep">Deep Scan</option>
-                        <option value="soft">Soft Scan</option>
-                    </select>
+                    {showOptions && (
+                        <select
+                            value={scanDepth}
+                            onChange={(e) => setScanDepth(e.target.value)}
+                            className="bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
+                        >
+                            <option value="deep">Deep Scan</option>
+                            <option value="soft">Soft Scan</option>
+                        </select>
+                    )}
                     <button
                         type="submit"
                         disabled={!url.trim()}
@@ -54,26 +56,19 @@ const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error }) => 
                         <span>Scan Website</span>
                     </button>
                 </div>
-                <div className="mt-4 flex items-center gap-4">
-                    <label className="flex items-center text-slate-300">
-                        <input
-                            type="checkbox"
-                            checked={useSecretsScanner}
-                            onChange={(e) => setUseSecretsScanner(e.target.checked)}
-                            className="mr-2"
-                        />
-                        Scan for Exposed Secrets
-                    </label>
-                    <label className="flex items-center text-slate-300">
-                        <input
-                            type="checkbox"
-                            checked={useDomainAnalyzer}
-                            onChange={(e) => setUseDomainAnalyzer(e.target.checked)}
-                            className="mr-2"
-                        />
-                        Analyze Domain Intelligence
-                    </label>
-                </div>
+                {showOptions && (
+                    <div className="mt-4 flex items-center gap-4">
+                        <label className="flex items-center text-slate-300">
+                            <input
+                                type="checkbox"
+                                checked={useDomainAnalyzer}
+                                onChange={(e) => setUseDomainAnalyzer(e.target.checked)}
+                                className="mr-2"
+                            />
+                            Analyze Domain Intelligence
+                        </label>
+                    </div>
+                )}
                 {error && (
                     <p className="mt-4 text-center text-red-400 bg-red-900/50 p-3 rounded-md border border-red-500/50">
                         {error}

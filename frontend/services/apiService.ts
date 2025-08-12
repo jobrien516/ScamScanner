@@ -1,8 +1,6 @@
 import { BACKEND_API_URL } from "@/constants";
 import type { HistoryAnalysisResult, AppSettings } from "@/types";
 
-// const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:8000';
-
 export class ApiError extends Error {
   constructor(message: string) {
     super(message);
@@ -26,19 +24,13 @@ export const getHistory = async (): Promise<HistoryAnalysisResult[]> => {
 export const analyzeUrl = async (
   url: string,
   scan_depth: string,
-  use_secrets_scanner: boolean,
   use_domain_analyzer: boolean
 ): Promise<{ job_id: string }> => {
   try {
     const response = await fetch(`${BACKEND_API_URL}/analyze`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        url,
-        scan_depth,
-        use_secrets_scanner,
-        use_domain_analyzer,
-      }),
+      body: JSON.stringify({ url, scan_depth, use_domain_analyzer }),
     });
 
     if (!response.ok) {
@@ -69,6 +61,28 @@ export const startHtmlAnalysis = async (
     return await response.json();
   } catch (error) {
     console.error("Error in startHtmlAnalysis:", error);
+    throw error;
+  }
+};
+
+export const analyzeSecrets = async (payload: {
+  content?: string;
+  url?: string;
+}): Promise<{ job_id: string }> => {
+  try {
+    const response = await fetch(`${BACKEND_API_URL}/analyze-secrets`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || "Failed to start secrets analysis");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error in analyzeSecrets:", error);
     throw error;
   }
 };

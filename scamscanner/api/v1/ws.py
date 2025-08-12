@@ -6,9 +6,9 @@ from fastapi import (
 from loguru import logger
 from ...services.websocket_manager import wsman
 
-ws_router = APIRouter()
+websocket_router = APIRouter()
 
-@ws_router.websocket("/ws/{job_id}")
+@websocket_router.websocket("/ws/{job_id}")
 async def get_websocket(websocket: WebSocket, job_id: str):
     await wsman.connect(job_id, websocket)
     try:

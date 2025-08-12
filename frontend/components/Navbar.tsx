@@ -30,6 +30,13 @@ const Navbar: React.FC = () => {
                     Scanner
                 </NavLink>
                 <NavLink
+                    to="/secrets"
+                    className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
+                    style={({ isActive }) => isActive ? activeLinkStyle : undefined}
+                >
+                    Secrets Scanner
+                </NavLink>
+                <NavLink
                     to="/history"
                     className="px-4 py-2 text-slate-300 hover:bg-slate-700 rounded-md transition-colors"
                     style={({ isActive }) => isActive ? activeLinkStyle : undefined}

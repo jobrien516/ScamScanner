@@ -8,12 +8,14 @@ import Mission from '@/components/pages/Mission';
 import ScanHistory from '@/components/pages/ScanHistory';
 import Settings from '@/components/pages/Settings';
 import Support from '@/components/pages/Support';
+import SecretsScanner from '@/components/pages/SecretsScanner';
 
 const App: React.FC = () => {
   return (
     <Routes>
       <Route path="/" element={<Page><Homepage /></Page>} />
       <Route path="/scanner" element={<Page><Scanner /></Page>} />
+      <Route path="/secrets" element={<Page><SecretsScanner /></Page>} />
       <Route path="/history" element={<Page><ScanHistory /></Page>} />
       <Route path="/mission" element={<Page><Mission /></Page>} />
       <Route path="/settings" element={<Page><Settings /></Page>} />
