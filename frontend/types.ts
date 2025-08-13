@@ -40,10 +40,31 @@ export interface AnalysisResult {
   site_url?: string;
   last_analyzed_at?: string;
 }
+
 export interface HistoryAnalysisResult extends AnalysisResult {
   id: number;
   site_url: string;
   last_analyzed_at: string;
+}
+
+export interface AuditFinding {
+  category: string;
+  description: string;
+  recommendation: string;
+  severity: "Low" | "Medium" | "High";
+  codeSnippet?: string;
+  fileName?: string;
+  lineNumber?: number;
+}
+
+export interface AuditResult {
+  overallGrade: "A" | "B" | "C" | "D" | "F";
+  qualityScore: number;
+  summary: string;
+  detailedAnalysis: AuditFinding[];
+  id?: number;
+  source_identifier?: string;
+  last_analyzed_at?: string;
 }
 
 export enum ViewState {

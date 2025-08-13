@@ -40,6 +40,87 @@ For each secret you find, provide the following details:
 Your response MUST be a single, raw JSON object that conforms to the provided schema, and the category for each finding should be "Exposed Secrets".
 """
 
+
+CODE_AUDITOR_PROMPT = """
+You are a principal software engineer with decades of experience in multiple programming languages and paradigms. Your task is to analyze the provided source code, critique the current design, and suggest code improvements and optimizations.
+
+Based on your analysis, provide a structured JSON response. Do not include any text, code block markers, or formatting outside of the single, raw JSON object.
+
+Analyze the source code for the following:
+- **Design & Architecture**: Evaluate the overall structure, modularity, and use of design patterns.
+- **Code Smells**: Look for indicators of deeper problems, such as long methods, large classes, duplicate code, feature envy, etc.
+- **Performance**: Identify potential performance bottlenecks, inefficient algorithms, or resource-intensive operations.
+- **Readability & Maintainability**: Assess the clarity, consistency, and documentation of the code.
+- **Best Practices & Idioms**: Check if the code adheres to established best practices and idiomatic conventions for the detected language and frameworks.
+
+Your response MUST be a single JSON object that conforms to the provided schema. For each finding, provide a clear description and a concrete recommendation.
+"""
+
+CODE_AUDITOR_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "overallGrade": {
+            "type": "string",
+            "enum": ["A", "B", "C", "D", "F"],
+            "description": "An overall letter grade for the code quality (A=Excellent, F=Poor).",
+        },
+        "qualityScore": {
+            "type": "integer",
+            "description": "A score from 0 (poor) to 100 (excellent) representing overall code quality.",
+        },
+        "summary": {
+            "type": "string",
+            "description": "A one-sentence summary of the code's strengths and weaknesses.",
+        },
+        "detailedAnalysis": {
+            "type": "array",
+            "description": "A list of specific findings and recommendations.",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "category": {
+                        "type": "string",
+                        "enum": [
+                            "Design & Architecture",
+                            "Code Smells",
+                            "Performance",
+                            "Readability & Maintainability",
+                            "Best Practices & Idioms",
+                        ],
+                    },
+                    "description": {
+                        "type": "string",
+                        "description": "A detailed explanation of the issue found.",
+                    },
+                    "recommendation": {
+                        "type": "string",
+                        "description": "A concrete suggestion for how to improve the code.",
+                    },
+                    "severity": {
+                        "type": "string",
+                        "enum": ["Low", "Medium", "High"],
+                        "description": "The impact of the issue (Low, Medium, High).",
+                    },
+                    "codeSnippet": {
+                        "type": "string",
+                        "description": "A relevant snippet of the code in question.",
+                    },
+                    "fileName": {
+                        "type": "string",
+                        "description": "The name of the file where the issue was found.",
+                    },
+                    "lineNumber": {
+                        "type": "integer",
+                        "description": "The approximate line number of the issue.",
+                    },
+                },
+                "required": ["category", "description", "recommendation", "severity"],
+            },
+        },
+    },
+    "required": ["overallGrade", "qualityScore", "summary", "detailedAnalysis"],
+}
+
 ANALYSIS_SCHEMA = {
     "type": "object",
     "properties": {

@@ -87,6 +87,28 @@ export const analyzeSecrets = async (payload: {
   }
 };
 
+export const analyzeCode = async (payload: {
+  url?: string;
+  code?: string;
+}): Promise<{ job_id: string }> => {
+  try {
+    const response = await fetch(`${BACKEND_API_URL}/analyze-code`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || "Failed to start code analysis");
+    }
+    return await response.json();
+  } catch (error) {
+    console.error("Error in analyzeCode:", error);
+    throw error;
+  }
+};
+
 export const getSettings = async (): Promise<AppSettings> => {
   try {
     const response = await fetch(`${BACKEND_API_URL}/settings`);

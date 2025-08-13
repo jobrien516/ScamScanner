@@ -8,6 +8,7 @@ from ...services.websocket_manager import wsman
 
 websocket_router = APIRouter()
 
+
 @websocket_router.websocket("/ws/{job_id}")
 async def get_websocket(websocket: WebSocket, job_id: str):
     await wsman.connect(job_id, websocket)

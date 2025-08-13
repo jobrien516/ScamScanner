@@ -11,8 +11,9 @@ export const pageContent = {
   },
   footer: {
     poweredBy:
-      "Powered by Google Gemini and an Over-Caffeinated, Under-Rested Developer.",
-    copyright: "© 2025 AI Scam Site Scanner. For educational purposes only.",
+      "Powered by Google Gemini and a single over-caffeinated, under-rested developer.",
+    copyright:
+      "© 2025 ScamScanner by Level 3 Labs. For educational purposes only.",
   },
   home: {
     title: "Empowering Your Digital Safety",

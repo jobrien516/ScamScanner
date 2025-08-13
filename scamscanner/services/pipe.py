@@ -1,10 +1,12 @@
 from typing import Callable, Awaitable, List, Any, Union
 
+
 class Pipe:
     """
     Pipe that applies a sequence of asynchronous processing functions to its input.
     Each stage receives (input, *args, **kwargs) and returns output.
     """
+
     def __init__(self):
         self.stages: List[Callable[[Any], Awaitable[Any]]] = []
 

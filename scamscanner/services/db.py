@@ -7,7 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from loguru import logger
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
-from ..models.schemas import Settings 
+from ..models.schemas import Settings
 
 load_dotenv()
 
@@ -45,8 +45,9 @@ async def init_db():
             session.add(Settings(id=1))
             await session.commit()
             logger.info("Default settings row created.")
-            
+
     logger.info("Database tables verified/created successfully.")
+
 
 @asynccontextmanager
 async def get_db_session() -> AsyncGenerator[AsyncSession, None]:

@@ -139,7 +139,7 @@
 #         domain_age = domain_info["domain_age_days"]
 #         severity = "Low"
 #         reasons = []
-        
+
 #         # Domain age
 #         if domain_age < 30:
 #             severity = "High"
@@ -147,19 +147,19 @@
 #         elif domain_age < 180:
 #             severity = "Medium"
 #             reasons.append("Domain age is less than 180 days.")
-        
+
 #         # Known bad registrars
 #         KNOWN_BAD_REGISTRARS = {"NameSilo, LLC", "Alibaba Cloud Computing (Beijing) Co., Ltd.", "NowCN"}
 #         registrar = domain_info.get("registrar", "N/A")
 #         if registrar in KNOWN_BAD_REGISTRARS:
 #             severity = "High"
 #             reasons.append(f"Registrar '{registrar}' is commonly associated with scam domains.")
-        
+
 #         # WHOIS Privacy
 #         if domain_info.get("whois_privacy", False):  # Assume bool or inferrable
 #             severity = "Medium" if severity != "High" else "High"
 #             reasons.append("WHOIS privacy/proxy is enabled.")
-        
+
 #         # Suspicious domain patterns
 #         import re
 #         domain_name = domain_info.get("domain", "")
@@ -305,7 +305,7 @@
 #                 domain_age = domain_info["domain_age_days"]
 #                 severity = "Low"
 #                 reasons = []
-                
+
 #                 # Domain age logic (existing)
 #                 if domain_age < 30:
 #                     severity = "High"
@@ -313,19 +313,19 @@
 #                 elif domain_age < 180:
 #                     severity = "Medium"
 #                     reasons.append("Domain age is less than 180 days.")
-                
+
 #                 # Known bad registrars
 #                 KNOWN_BAD_REGISTRARS = {"NameSilo, LLC", "Alibaba Cloud Computing (Beijing) Co., Ltd.", "NowCN"}
 #                 registrar = domain_info.get("registrar", "N/A")
 #                 if registrar in KNOWN_BAD_REGISTRARS:
 #                     severity = "High"
 #                     reasons.append(f"Registrar '{registrar}' is commonly associated with scam domains.")
-                
+
 #                 # WHOIS Privacy
 #                 if domain_info.get("whois_privacy", False):  # Assume bool or inferrable
 #                     severity = "Medium" if severity != "High" else "High"
 #                     reasons.append("WHOIS privacy/proxy is enabled.")
-                
+
 #                 # Suspicious domain patterns
 #                 import re
 #                 domain_name = domain_info.get("domain", "")
