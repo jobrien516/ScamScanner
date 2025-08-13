@@ -1,14 +1,13 @@
 import json
 import asyncio
-from sqlmodel.ext.asyncio.session import AsyncSession
 from loguru import logger
 
-from .website_fetcher import WebsiteFetcher
-from .analyzer import WebsiteAnalyzer
-from ..models.schemas import AnalysisResult, Site
-from .websocket_manager import WebsocketConnectionManager
-from ..services.db import get_db_session
-from .workflows import AnalysisManager
+from .scam_scanner import ScamScanner
+from ..website_fetcher import WebsiteFetcher
+from ..analyzer import WebsiteAnalyzer
+from ...models.schemas import Site
+from ..websocket_manager import WebsocketConnectionManager
+from ..db import get_db_session
 
 
 class SecretsScanner:
@@ -16,7 +15,7 @@ class SecretsScanner:
         self.job_id = job_id
         self.wsman = wsman
         self.analyzer = WebsiteAnalyzer()
-        self.manager = AnalysisManager(job_id, wsman)
+        self.manager = ScamScanner(job_id, wsman)
 
     async def run_analysis(self, content: str | None = None, url: str | None = None):
         """
@@ -65,7 +64,7 @@ class SecretsScanner:
 
                 final_analysis = self.manager._calculate_overall_risk(analysis_data)
 
-                final_result_model = await self.manager._save_analysis_to_db(
+                final_result_model = await self.manager._save(
                     site=site, analysis_data=final_analysis
                 )
 

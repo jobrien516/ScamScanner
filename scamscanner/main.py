@@ -18,12 +18,6 @@ async def website_fetch_exception_handler(request: Request, exc: WebsiteFetchErr
     )
 
 
-@app.get("/")
-def read_root():
-    """Defines the root endpoint for the API."""
-    return {"message": "Welcome to the ScamScanner API"}
-
-
 # async def main():
 #     fetcher = WebsiteFetcher("https://backgroundreport.live/score006")
 #     async with get_db_session() as session:

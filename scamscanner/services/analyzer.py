@@ -3,7 +3,11 @@ from loguru import logger
 from .llm import generate_analysis
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from ..models.constants import SECRET_ANALYSIS_PROMPT, ANALYSIS_PROMPT
+from ..models.constants import (
+    SECRET_ANALYSIS_PROMPT,
+    ANALYSIS_PROMPT,
+    ANALYSIS_SCHEMA
+    )
 
 
 def clean_markdown_code_blocks(markdown_text: str) -> str:
@@ -24,8 +28,9 @@ class WebsiteAnalyzer:
         """
         try:
             logger.info("Starting website content analysis.")
-            response = await generate_analysis(content=content, db=db, prompt=ANALYSIS_PROMPT)
-
+            response = await generate_analysis(
+                content=content, db=db, prompt=ANALYSIS_PROMPT, schema=ANALYSIS_SCHEMA
+            )
             if response:
                 logger.info("Successfully received analysis from AI model.")
                 return response

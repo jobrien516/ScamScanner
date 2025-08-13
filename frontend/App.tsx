@@ -9,7 +9,7 @@ import ScanHistory from '@/components/pages/ScanHistory';
 import Settings from '@/components/pages/Settings';
 import Support from '@/components/pages/Support';
 import SecretsScanner from '@/components/pages/SecretsScanner';
-import CodeAuditor from '@/components/pages/CodeAuditor';
+import CodeScanner from '@/components/pages/CodeScanner';
 
 const App: React.FC = () => {
   return (
@@ -17,7 +17,7 @@ const App: React.FC = () => {
       <Route path="/" element={<Page><Homepage /></Page>} />
       <Route path="/scanner" element={<Page><Scanner /></Page>} />
       <Route path="/secrets" element={<Page><SecretsScanner /></Page>} />
-      <Route path="/auditor" element={<Page><CodeAuditor /></Page>} />
+      <Route path="/auditor" element={<Page><CodeScanner /></Page>} />
       <Route path="/history" element={<Page><ScanHistory /></Page>} />
       <Route path="/mission" element={<Page><Mission /></Page>} />
       <Route path="/settings" element={<Page><Settings /></Page>} />

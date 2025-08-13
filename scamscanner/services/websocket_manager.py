@@ -1,5 +1,6 @@
 from fastapi import WebSocket
 from typing import Dict, Any
+from loguru import logger
 
 
 class WebsocketConnectionManager:
@@ -18,10 +19,12 @@ class WebsocketConnectionManager:
 
     async def send_update(self, message: str, job_id: str):
         if job_id in self.active_connections:
+            logger.info(message)
             await self.active_connections[job_id].send_text(message)
 
     async def send_final_result(self, result: Any, job_id: str):
         if job_id in self.active_connections:
+            logger.info(result)
             await self.active_connections[job_id].send_json(result)
 
 

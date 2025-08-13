@@ -1,6 +1,6 @@
-from scamscanner.config import get_settings
 from importlib import reload
 from scamscanner import config
+
 
 def test_get_settings(monkeypatch):
     """

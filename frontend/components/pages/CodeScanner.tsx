@@ -13,7 +13,7 @@ const getWebSocketURL = () => {
     return BACKEND_API_URL.replace(/^http/, 'ws');
 };
 
-const CodeAuditor: React.FC = () => {
+const CodeScanner: React.FC = () => {
     const [view, setView] = useState<ViewState>(ViewState.START);
     const [analysisResult, setAnalysisResult] = useState<AuditResult | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -163,7 +163,7 @@ const CodeAuditor: React.FC = () => {
         <>
             <header className="text-center mb-8">
                 <h1 className="text-3xl sm:text-4xl lg:text-5xl font-bold text-slate-100 tracking-tight">
-                    Code Auditor
+                    Code Scanner
                 </h1>
                 <p className="mt-4 text-lg text-slate-400 max-w-2xl mx-auto">
                     Enter a URL to a public GitHub repository or upload a local directory to receive a critique of its design and suggestions for improvement.
@@ -174,4 +174,4 @@ const CodeAuditor: React.FC = () => {
     );
 };
 
-export default CodeAuditor;
+export default CodeScanner;

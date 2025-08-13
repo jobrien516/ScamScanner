@@ -109,7 +109,7 @@
 #             await db.refresh(site)
 #     return site
 
-# async def _save_analysis_to_db(
+# async def _save(
 #     db: AsyncSession, site: Site, analysis_data: dict
 # ) -> AnalysisResult:
 #     """Saves a new analysis result linked to a site, ensuring data is normalized."""
@@ -358,7 +358,7 @@
 #                 )
 
 #             # ----------- Persist and Report Result -----------
-#             final_result_model = await _save_analysis_to_db(
+#             final_result_model = await _save(
 #                 db=db, site=site, analysis_data=analysis_data
 #             )
 

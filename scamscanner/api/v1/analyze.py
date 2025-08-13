@@ -6,21 +6,23 @@ from fastapi import (
 )
 
 from ...models.schemas import UrlRequest, HtmlRequest, SecretsRequest, CodeAuditRequest
-from ...services.workflows import ScamAnalysisOrchestrator, CodeAuditOrchestrator
-from ...services.secrets_scanner import SecretsScanner
+from ...services.scanners import CodeScanner, ScamScanner, SecretsScanner
 from ...services.websocket_manager import wsman
 
 analyze_router = APIRouter()
 
+
 async def run_scam_analysis_task(job_id: str, **kwargs):
-    """Wrapper to run scam analysis in the orchestrator's context."""
-    async with ScamAnalysisOrchestrator(job_id=job_id, wsman=wsman) as orchestrator:
-        await orchestrator.run(**kwargs)
+    """Wrapper to run scam analysis in the scanner's context."""
+    async with ScamScanner(job_id=job_id, wsman=wsman) as scanner:
+        await scanner.run(**kwargs)
+
 
 async def run_code_audit_task(job_id: str, **kwargs):
-    """Wrapper to run code audit in the orchestrator's context."""
-    async with CodeAuditOrchestrator(job_id=job_id, wsman=wsman) as orchestrator:
-        await orchestrator.run(**kwargs)
+    """Wrapper to run code audit in the scanner's context."""
+    async with CodeScanner(job_id=job_id, wsman=wsman) as scanner:
+        await scanner.run(**kwargs)
+
 
 @analyze_router.post("/analyze")
 async def analyze_url(request: UrlRequest, background_tasks: BackgroundTasks):
@@ -34,6 +36,7 @@ async def analyze_url(request: UrlRequest, background_tasks: BackgroundTasks):
     )
     return {"job_id": job_id}
 
+
 @analyze_router.post("/analyze-html")
 async def analyze_html(request: HtmlRequest, background_tasks: BackgroundTasks):
     job_id = str(uuid.uuid4())
@@ -46,21 +49,23 @@ async def analyze_html(request: HtmlRequest, background_tasks: BackgroundTasks):
     )
     return {"job_id": job_id}
 
+
 @analyze_router.post("/analyze-secrets")
 async def analyze_secrets(request: SecretsRequest, background_tasks: BackgroundTasks):
     job_id = str(uuid.uuid4())
     scanner = SecretsScanner(job_id=job_id, wsman=wsman)
     background_tasks.add_task(
-        scanner.run_analysis,
-        content=request.content,
-        url=request.url
+        scanner.run_analysis, content=request.content, url=request.url
     )
     return {"job_id": job_id}
+
 
 @analyze_router.post("/analyze-code")
 async def analyze_code(request: CodeAuditRequest, background_tasks: BackgroundTasks):
     if not request.url and not request.code:
-        raise HTTPException(status_code=400, detail="Either 'url' or 'code' must be provided.")
+        raise HTTPException(
+            status_code=400, detail="Either 'url' or 'code' must be provided."
+        )
     job_id = str(uuid.uuid4())
     background_tasks.add_task(
         run_code_audit_task,

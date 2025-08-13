@@ -1,12 +1,14 @@
 import pytest
 from scamscanner.services.pipe import Pipe
 
+
 @pytest.mark.asyncio
 async def test_pipe_run():
     """
     Tests that the Pipe class correctly applies a sequence of asynchronous
     processing functions to its input.
     """
+
     # Define some simple async functions to use as stages in the pipe
     async def stage_one(data, *args, **kwargs):
         return data + 1

@@ -2,6 +2,7 @@ import pytest
 from unittest.mock import AsyncMock
 from scamscanner.services.websocket_manager import WebsocketConnectionManager
 
+
 @pytest.mark.asyncio
 async def test_websocket_manager_connect_disconnect():
     """
@@ -18,6 +19,7 @@ async def test_websocket_manager_connect_disconnect():
     manager.disconnect(job_id)
     assert job_id not in manager.active_connections
 
+
 @pytest.mark.asyncio
 async def test_websocket_manager_send_update():
     """
@@ -31,6 +33,7 @@ async def test_websocket_manager_send_update():
     await manager.send_update("Test update", job_id)
 
     websocket.send_text.assert_called_once_with("Test update")
+
 
 @pytest.mark.asyncio
 async def test_websocket_manager_send_final_result():

@@ -1,7 +1,7 @@
 import pytest
 import json
 from unittest.mock import AsyncMock, patch
-from scamscanner.services.code_auditor import CodeAuditor
+from scamscanner.services.scanners import CodeScanner
 
 
 @pytest.fixture
@@ -12,8 +12,8 @@ def wsman():
 
 @pytest.fixture
 def code_auditor(wsman):
-    """Fixture to create a CodeAuditor instance with a mock wsman."""
-    return CodeAuditor(job_id="test_job_id", wsman=wsman)
+    """Fixture to create a CodeScanner instance with a mock wsman."""
+    return CodeScanner(job_id="test_job_id", wsman=wsman)
 
 
 @pytest.mark.asyncio
@@ -26,10 +26,16 @@ async def test_run_audit_success(code_auditor, wsman):
         "overallGrade": "A",
         "summary": "Excellent code quality.",
     }
-    
-    with patch('scamscanner.services.code_auditor.get_db_session') as mock_get_db_session, \
-         patch('scamscanner.services.code_auditor.generate_analysis', new_callable=AsyncMock) as mock_generate_analysis:
 
+    with (
+        patch(
+            "scamscanner.services.code_auditor.get_db_session"
+        ) as mock_get_db_session,
+        patch(
+            "scamscanner.services.code_auditor.generate_analysis",
+            new_callable=AsyncMock,
+        ) as mock_generate_analysis,
+    ):
         mock_db_session = AsyncMock()
         mock_get_db_session.return_value.__aenter__.return_value = mock_db_session
         mock_generate_analysis.return_value = json.dumps(mock_analysis_result)
@@ -48,10 +54,16 @@ async def test_run_audit_exception_handling(code_auditor, wsman):
     Tests that exceptions during the audit process are caught and handled correctly.
     """
     error_message = "AI model failed"
-    
-    with patch('scamscanner.services.code_auditor.get_db_session') as mock_get_db_session, \
-         patch('scamscanner.services.code_auditor.generate_analysis', new_callable=AsyncMock) as mock_generate_analysis:
 
+    with (
+        patch(
+            "scamscanner.services.code_auditor.get_db_session"
+        ) as mock_get_db_session,
+        patch(
+            "scamscanner.services.code_auditor.generate_analysis",
+            new_callable=AsyncMock,
+        ) as mock_generate_analysis,
+    ):
         mock_db_session = AsyncMock()
         mock_get_db_session.return_value.__aenter__.return_value = mock_db_session
         mock_generate_analysis.side_effect = Exception(error_message)
@@ -59,6 +71,8 @@ async def test_run_audit_exception_handling(code_auditor, wsman):
         await code_auditor.run_audit("some code")
 
         wsman.send_update.assert_any_call("Analyzing source code...", "test_job_id")
-        wsman.send_update.assert_any_call(f"An error occurred during analysis: {error_message}", "test_job_id")
+        wsman.send_update.assert_any_call(
+            f"An error occurred during analysis: {error_message}", "test_job_id"
+        )
         wsman.send_final_result.assert_not_called()
         wsman.disconnect.assert_called_once_with("test_job_id")
