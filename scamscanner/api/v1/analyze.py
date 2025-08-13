@@ -6,27 +6,27 @@ from fastapi import (
 )
 
 from ...models.schemas import UrlRequest, HtmlRequest, SecretsRequest, CodeAuditRequest
-from ...services.workflows import AnalysisManager
+from ...services.workflows import ScamAnalysisOrchestrator, CodeAuditOrchestrator
 from ...services.secrets_scanner import SecretsScanner
 from ...services.websocket_manager import wsman
 
 analyze_router = APIRouter()
 
-async def run_analysis_task(job_id: str, **kwargs):
-    """Wrapper to run analysis in the manager's context."""
-    async with AnalysisManager(job_id=job_id, wsman=wsman) as manager:
-        await manager.run_analysis(**kwargs)
+async def run_scam_analysis_task(job_id: str, **kwargs):
+    """Wrapper to run scam analysis in the orchestrator's context."""
+    async with ScamAnalysisOrchestrator(job_id=job_id, wsman=wsman) as orchestrator:
+        await orchestrator.run(**kwargs)
 
 async def run_code_audit_task(job_id: str, **kwargs):
-    """Wrapper to run code audit in the manager's context."""
-    async with AnalysisManager(job_id=job_id, wsman=wsman) as manager:
-        await manager.run_code_audit(**kwargs)
+    """Wrapper to run code audit in the orchestrator's context."""
+    async with CodeAuditOrchestrator(job_id=job_id, wsman=wsman) as orchestrator:
+        await orchestrator.run(**kwargs)
 
 @analyze_router.post("/analyze")
 async def analyze_url(request: UrlRequest, background_tasks: BackgroundTasks):
     job_id = str(uuid.uuid4())
     background_tasks.add_task(
-        run_analysis_task,
+        run_scam_analysis_task,
         job_id=job_id,
         url=request.url,
         scan_depth=str(request.scan_depth),
@@ -39,7 +39,7 @@ async def analyze_html(request: HtmlRequest, background_tasks: BackgroundTasks):
     job_id = str(uuid.uuid4())
     url_placeholder = f"manual_analysis_{job_id}"
     background_tasks.add_task(
-        run_analysis_task,
+        run_scam_analysis_task,
         job_id=job_id,
         url=url_placeholder,
         content=request.html,
