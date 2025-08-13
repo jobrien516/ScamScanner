@@ -27,3 +27,16 @@ dev = [
     "respx>=0.22.0",
 ]
 
+# [tool.pytest.ini_options]
+# testpaths = ["tests"]
+# python_files = "test_*.py"
+# addopts = "-p no:warnings"
+# asyncio_mode = "auto"
+
+# [tool.coverage.run]
+# branch = true
+# source = ["."]
+
+# [tool.coverage.report]
+# fail_under = 80
+# show_missing = true
