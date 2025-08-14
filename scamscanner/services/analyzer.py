@@ -1,4 +1,5 @@
 import re
+import json
 from loguru import logger
 from .llm import generate_analysis
 from sqlmodel.ext.asyncio.session import AsyncSession
@@ -35,8 +36,14 @@ class WebsiteAnalyzer:
                 logger.info("Successfully received analysis from AI model.")
                 return response
             else:
-                logger.error("AI model returned an empty response.")
-                raise ValueError("AI model returned no content.")
+                logger.warning("AI model returned an empty response for content analysis. Returning default empty result.")
+                # Return a default structure that matches the schema
+                return json.dumps({
+                    "overallRisk": "Unknown",
+                    "riskScore": 0,
+                    "summary": "AI analysis could not be completed for this section.",
+                    "detailedAnalysis": []
+                })
         except Exception as e:
             logger.error(f"Error during website analysis: {e}")
             raise
@@ -54,8 +61,9 @@ class WebsiteAnalyzer:
                 logger.info("Successfully received secret analysis from AI model.")
                 return response
             else:
-                logger.error("AI model returned an empty response for secrets scan.")
-                raise ValueError("AI model returned no content for secrets scan.")
+                logger.warning("AI model returned an empty response for secrets scan. Returning default empty result.")
+                # Return a default structure with an empty list of findings
+                return json.dumps({"detailedAnalysis": []})
         except Exception as e:
             logger.error(f"Error during secret analysis: {e}")
             raise

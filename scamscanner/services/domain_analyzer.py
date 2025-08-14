@@ -26,9 +26,18 @@ class DomainAnalyzer:
                 return None
 
         try:
-            domain_name = urlparse(url).netloc
-            if not domain_name:
+            hostname = urlparse(url).netloc
+            if not hostname:
                 return None
+
+            if hostname == "localhost" or not "." in hostname:
+                return None
+            
+            parts = hostname.split('.')
+            if len(parts) > 2:
+                domain_name = '.'.join(parts[-2:])
+            else:
+                domain_name = hostname
 
             logger.info(f"Performing WHOIS lookup for {domain_name}...")
             w = await run_in_threadpool(sync_whois_lookup, domain_name)
