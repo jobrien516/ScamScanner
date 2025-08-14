@@ -1,136 +1,39 @@
-import React, { useState, useCallback, useEffect, useRef } from 'react';
+import React, { useState, useCallback } from 'react';
 import type { AnalysisResult } from '@/types';
 import { ViewState } from '@/types';
 import { analyzeUrl, startHtmlAnalysis } from '@/services/apiService';
+import { useAnalysis } from '@/hooks/useAnalysis';
 import UrlInput from '@/components/UrlInput';
 import ManualInput from '@/components/ManualInput';
 import AnalysisResultDisplay from '@/components/AnalysisResult';
-import Spinner from '@/components/Spinner';
-import { DEMO_SITES, BACKEND_API_URL } from '@/constants';
+import LoadingDisplay from '@/components/LoadingDisplay';
 import HowItWorks from '@/components/HowItWorks';
-import WebSocketProgressLog from '@/components/WSProgressLog';
-
-const getWebSocketURL = () => {
-  return BACKEND_API_URL.replace(/^http/, 'ws');
-};
+import { DEMO_SITES } from '@/constants';
 
 const Scanner: React.FC = () => {
-  const [view, setView] = useState<ViewState>(ViewState.START);
-  const [analysisResult, setAnalysisResult] = useState<AnalysisResult | null>(null);
-  const [error, setError] = useState<string | null>(null);
-  const [currentUrl, setCurrentUrl] = useState<string>('');
-  const [progress, setProgress] = useState<string[]>([]);
-  const [jobId, setJobId] = useState<string | null>(null);
-  const [isStopped, setIsStopped] = useState(false);
-  const wsRef = useRef<WebSocket | null>(null);
+  const { view, result, error, progress, isStopped, setView, startAnalysis, resetState, stopScanning } =
+    useAnalysis<AnalysisResult>();
+  const [currentUrl, setCurrentUrl] = useState('');
+  const [scanDepth, setScanDepth] = useState('deep');
+  const [useDomainAnalyzer, setUseDomainAnalyzer] = useState(true);
 
-  useEffect(() => {
-    if (!jobId) return;
-
-    wsRef.current = new WebSocket(`${getWebSocketURL()}/ws/${jobId}`);
-    let analysisCompleted = false;
-
-    const handleError = (message: string) => {
-      setError(message);
-      setView(ViewState.START);
-      analysisCompleted = true;
-    };
-
-    wsRef.current.onopen = () => {
-      setProgress(['Connection established. Starting scan...']);
-    };
-
-    wsRef.current.onmessage = (event) => {
-      try {
-        const data = JSON.parse(event.data);
-        setAnalysisResult(data);
-        setView(ViewState.RESULT);
-        analysisCompleted = true;
-      } catch {
-        const message = event.data as string;
-        if (message.toLowerCase().includes('error')) {
-          handleError(message);
-        } else {
-          setProgress(prev => [...prev, message]);
-        }
-      }
-    };
-
-    wsRef.current.onerror = () => {
-      handleError('A WebSocket connection error occurred. Please try again.');
-    };
-
-    wsRef.current.onclose = () => {
-      if (!analysisCompleted && !isStopped) {
-        handleError('The analysis was interrupted unexpectedly. Please try again.');
-      }
-    };
-
-    return () => {
-      wsRef.current?.close();
-    };
-  }, [jobId, isStopped]);
-
-  const startAnalysis = useCallback(() => {
-    setView(ViewState.LOADING);
-    setError(null);
-    setProgress([]);
-    setAnalysisResult(null);
-    setJobId(null);
-    setIsStopped(false);
-  }, []);
-
-  const handleUrlSubmit = useCallback(async (url: string, scanDepth: string, useDomainAnalyzer: boolean) => {
-    startAnalysis();
+  const handleUrlSubmit = useCallback(async (url: string) => {
     setCurrentUrl(url);
-    try {
-      const normalizedUrl = url.trim().replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
-      const response = DEMO_SITES[normalizedUrl]
-        ? await startHtmlAnalysis(DEMO_SITES[normalizedUrl])
-        : await analyzeUrl(url, scanDepth, useDomainAnalyzer);
+    const normalizedUrl = url.trim().replace(/^(https?:\/\/)?(www\.)?/, '').replace(/\/$/, '');
 
-      setJobId(response.job_id);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(errorMessage);
-      setView(ViewState.START);
-    }
-  }, [startAnalysis]);
+    const apiCallPromise = DEMO_SITES[normalizedUrl]
+      ? startHtmlAnalysis(DEMO_SITES[normalizedUrl])
+      : analyzeUrl(url, scanDepth, useDomainAnalyzer);
+
+    await startAnalysis(apiCallPromise);
+  }, [startAnalysis, scanDepth, useDomainAnalyzer]);
 
   const handleManualSubmit = useCallback(async (html: string) => {
-    startAnalysis();
     setCurrentUrl('Manual Submission');
-
-    try {
-      const { job_id } = await startHtmlAnalysis(html);
-      setJobId(job_id);
-    } catch (err) {
-      const errorMessage = err instanceof Error ? err.message : 'An unknown error occurred.';
-      setError(errorMessage);
-      setView(ViewState.MANUAL_INPUT);
-    }
+    await startAnalysis(startHtmlAnalysis(html));
   }, [startAnalysis]);
 
-  const resetState = useCallback(() => {
-    setView(ViewState.START);
-    setAnalysisResult(null);
-    setError(null);
-    setCurrentUrl('');
-    setJobId(null);
-    setProgress([]);
-    setIsStopped(false);
-  }, []);
-
-  const handleGoToManual = useCallback(() => {
-    setView(ViewState.MANUAL_INPUT);
-    setError(null);
-  }, []);
-
-  const handleStopScanning = () => {
-    setIsStopped(true);
-    wsRef.current?.close();
-    setProgress(prev => [...prev, 'Scan cancelled by user.']);
-  };
+  const handleGoToManual = useCallback(() => setView(ViewState.MANUAL_INPUT), [setView]);
 
   const renderContent = () => {
     switch (view) {
@@ -138,53 +41,40 @@ const Scanner: React.FC = () => {
         return (
           <div className="space-y-8">
             <HowItWorks />
-            <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error} />
+            <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error}>
+              <select
+                value={scanDepth}
+                onChange={(e) => setScanDepth(e.target.value)}
+                className="bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
+              >
+                <option value="deep">Deep Scan</option>
+                <option value="soft">Soft Scan</option>
+              </select>
+              <label className="flex items-center text-slate-300 p-2 whitespace-nowrap">
+                <input
+                  type="checkbox"
+                  checked={useDomainAnalyzer}
+                  onChange={(e) => setUseDomainAnalyzer(e.target.checked)}
+                  className="mr-2 h-4 w-4 rounded border-slate-500 bg-slate-700 text-blue-500 focus:ring-blue-500"
+                />
+                Domain Intelligence
+              </label>
+            </UrlInput>
           </div>
         );
       case ViewState.MANUAL_INPUT:
         return <ManualInput onAnalyze={handleManualSubmit} error={error} url={currentUrl} onBack={resetState} />;
       case ViewState.LOADING:
-        return (
-          <div className="bg-slate-800/50 p-6 max-w-3xl mx-auto sm:p-8 rounded-xl shadow-2xl border border-slate-700">
-            <div className="flex items-center justify-center mb-6">
-              {!isStopped && <Spinner />}
-              <h2 className="ml-4 text-xl text-slate-200">
-                {isStopped ? 'Scan Cancelled' : 'Analysis in Progress...'}
-              </h2>
-            </div>
-
-            <div className="mb-6 max-w-5xl text-blue-700 mx-auto text-center">
-              {isStopped ? (
-                <button
-                  onClick={resetState}
-                  className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-md transition duration-200 shadow-lg hover:shadow-blue-500/30"
-                >
-                  Scan New Site
-                </button>
-              ) : (
-                <button
-                  onClick={handleStopScanning}
-                  className="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-md transition duration-200 shadow-lg hover:shadow-red-500/30"
-                >
-                  Stop Scanning
-                </button>
-              )}
-            </div>
-
-            <WebSocketProgressLog messages={progress} />
-          </div>
-        );
+        return <LoadingDisplay onStop={stopScanning} isStopped={isStopped} onReset={resetState} progressMessages={progress} />;
       case ViewState.RESULT:
-        return <AnalysisResultDisplay result={analysisResult} error={error} onScanNew={resetState} url={currentUrl} />;
+        return <AnalysisResultDisplay result={result} error={error} onScanNew={resetState} url={currentUrl} />;
       default:
         return <UrlInput onScan={handleUrlSubmit} onUploadClick={handleGoToManual} error={error} />;
     }
   };
 
   return (
-    <>
-      <main className="mt-8">{renderContent()}</main>
-    </>
+    <main className="mt-8">{renderContent()}</main>
   );
 };
 

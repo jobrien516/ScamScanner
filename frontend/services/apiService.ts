@@ -8,136 +8,69 @@ export class ApiError extends Error {
   }
 }
 
-export const getHistory = async (): Promise<HistoryAnalysisResult[]> => {
+async function fetchApi(
+  endpoint: string,
+  options: RequestInit = {}
+): Promise<any> {
   try {
-    const response = await fetch(`${BACKEND_API_URL}/history`);
+    const response = await fetch(`${BACKEND_API_URL}${endpoint}`, options);
     if (!response.ok) {
-      throw new Error("Failed to fetch analysis history");
+      const errorData = await response.json();
+      throw new ApiError(errorData.detail || `Failed to fetch ${endpoint}`);
     }
     return await response.json();
   } catch (error) {
-    console.error("Error in getHistory:", error);
+    console.error(`Error in fetchApi for endpoint ${endpoint}:`, error);
     throw error;
   }
-};
+}
 
-export const analyzeUrl = async (
+export const getHistory = (): Promise<HistoryAnalysisResult[]> =>
+  fetchApi("/history");
+
+export const analyzeUrl = (
   url: string,
   scan_depth: string,
   use_domain_analyzer: boolean
-): Promise<{ job_id: string }> => {
-  try {
-    const response = await fetch(`${BACKEND_API_URL}/analyze`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url, scan_depth, use_domain_analyzer }),
-    });
+): Promise<{ job_id: string }> =>
+  fetchApi("/analyze", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ url, scan_depth, use_domain_analyzer }),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to start URL analysis");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error in analyzeUrl:", error);
-    throw error;
-  }
-};
+export const startHtmlAnalysis = (html: string): Promise<{ job_id: string }> =>
+  fetchApi("/analyze-html", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ html }),
+  });
 
-export const startHtmlAnalysis = async (
-  html: string
-): Promise<{ job_id: string }> => {
-  try {
-    const response = await fetch(`${BACKEND_API_URL}/analyze-html`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ html }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to start HTML analysis");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error in startHtmlAnalysis:", error);
-    throw error;
-  }
-};
-
-export const analyzeSecrets = async (payload: {
+export const analyzeSecrets = (payload: {
   content?: string;
   url?: string;
-}): Promise<{ job_id: string }> => {
-  try {
-    const response = await fetch(`${BACKEND_API_URL}/analyze-secrets`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+}): Promise<{ job_id: string }> =>
+  fetchApi("/analyze-secrets", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to start secrets analysis");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error in analyzeSecrets:", error);
-    throw error;
-  }
-};
-
-export const analyzeCode = async (payload: {
+export const analyzeCode = (payload: {
   url?: string;
   code?: string;
-}): Promise<{ job_id: string }> => {
-  try {
-    const response = await fetch(`${BACKEND_API_URL}/analyze-code`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(payload),
-    });
+}): Promise<{ job_id: string }> =>
+  fetchApi("/analyze-code", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to start code analysis");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error in analyzeCode:", error);
-    throw error;
-  }
-};
+export const getSettings = (): Promise<AppSettings> => fetchApi("/settings");
 
-export const getSettings = async (): Promise<AppSettings> => {
-  try {
-    const response = await fetch(`${BACKEND_API_URL}/settings`);
-    if (!response.ok) {
-      throw new Error("Failed to fetch settings");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error in getSettings:", error);
-    throw error;
-  }
-};
-
-export const updateSettings = async (
-  settings: AppSettings
-): Promise<AppSettings> => {
-  try {
-    const response = await fetch(`${BACKEND_API_URL}/settings`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(settings),
-    });
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.detail || "Failed to update settings");
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Error in updateSettings:", error);
-    throw error;
-  }
-};
+export const updateSettings = (settings: AppSettings): Promise<AppSettings> =>
+  fetchApi("/settings", {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(settings),
+  });

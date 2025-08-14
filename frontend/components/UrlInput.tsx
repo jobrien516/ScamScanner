@@ -2,23 +2,28 @@ import React, { useState } from 'react';
 import { SearchIcon } from './Icons';
 
 type UrlInputProps = {
-    onScan: (url: string, scanDepth: string, useDomainAnalyzer: boolean) => void | Promise<void>;
+    onScan: (url: string) => void;
     onUploadClick: () => void;
     error?: string | null;
-    showOptions?: boolean;
+    children?: React.ReactNode;
+    scanButtonText?: string;
+    label?: string;
 };
 
-const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error, showOptions = true }) => {
+const UrlInput: React.FC<UrlInputProps> = ({
+    onScan,
+    onUploadClick,
+    error,
+    children,
+    scanButtonText = 'Scan Website',
+    label = 'Enter Website URL'
+}) => {
     const [url, setUrl] = useState('');
-    const [scanDepth, setScanDepth] = useState(() => {
-        return localStorage.getItem('defaultScanDepth') || 'soft';
-    });
-    const [useDomainAnalyzer, setUseDomainAnalyzer] = useState(true);
 
     const handleSubmit = (e: React.FormEvent) => {
         e.preventDefault();
         if (url.trim()) {
-            onScan(url, scanDepth, useDomainAnalyzer);
+            onScan(url);
         }
     };
 
@@ -26,49 +31,27 @@ const UrlInput: React.FC<UrlInputProps> = ({ onScan, onUploadClick, error, showO
         <div className="bg-slate-800/50 p-6 sm:p-8 rounded-xl shadow-2xl border border-slate-700 max-w-5xl mx-auto">
             <form onSubmit={handleSubmit}>
                 <label htmlFor="url-input" className="block text-lg font-medium text-slate-300 mb-2">
-                    Enter Website URL
+                    {label}
                 </label>
-                <div className="flex flex-col sm:flex-row gap-4">
+                <div className="flex flex-col sm:flex-row gap-4 items-center">
                     <input
                         id="url-input"
                         type="text"
                         value={url}
                         onChange={(e) => setUrl(e.target.value)}
-                        placeholder="e.g., demo-scam.com"
+                        placeholder="e.g., demo-scam.com or https://github.com/user/repo"
                         className="flex-grow bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
                     />
-                    {showOptions && (
-                        <select
-                            value={scanDepth}
-                            onChange={(e) => setScanDepth(e.target.value)}
-                            className="bg-slate-900 border border-slate-600 rounded-md py-3 px-4 text-slate-100 focus:ring-2 focus:ring-blue-500 focus:border-blue-500 outline-none transition duration-200"
-                        >
-                            <option value="deep">Deep Scan</option>
-                            <option value="soft">Soft Scan</option>
-                        </select>
-                    )}
+                    {children}
                     <button
                         type="submit"
                         disabled={!url.trim()}
                         className="flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 disabled:bg-slate-600 disabled:cursor-not-allowed text-white font-bold py-3 px-6 rounded-md transition-all duration-200 shadow-lg hover:shadow-blue-500/30"
                     >
                         <SearchIcon />
-                        <span>Scan Website</span>
+                        <span>{scanButtonText}</span>
                     </button>
                 </div>
-                {showOptions && (
-                    <div className="mt-4 flex items-center gap-4">
-                        <label className="flex items-center text-slate-300">
-                            <input
-                                type="checkbox"
-                                checked={useDomainAnalyzer}
-                                onChange={(e) => setUseDomainAnalyzer(e.target.checked)}
-                                className="mr-2"
-                            />
-                            Analyze Domain Intelligence
-                        </label>
-                    </div>
-                )}
                 {error && (
                     <p className="mt-4 text-center text-red-400 bg-red-900/50 p-3 rounded-md border border-red-500/50">
                         {error}
