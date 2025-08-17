@@ -1,10 +1,10 @@
 from google import genai
 from google.genai import types
 from sqlmodel.ext.asyncio.session import AsyncSession
-from ..models.schemas import Settings
+from models.schemas import Settings
 
-from ..models.constants import ANALYSIS_SCHEMA
-from ..config import settings as env_settings
+from models.constants import ANALYSIS_SCHEMA
+from config import settings as env_settings
 
 
 async def generate_analysis(

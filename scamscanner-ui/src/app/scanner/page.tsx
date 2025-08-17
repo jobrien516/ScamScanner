@@ -1,22 +1,19 @@
 "use client";
 
 import { useState, useMemo } from "react";
-import { Button } from "@/components/ui/button";
 import {
     Card,
     CardContent,
     CardDescription,
-    CardFooter,
     CardHeader,
     CardTitle,
 } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { useAnalysis } from "@/hooks/useAnalysis";
 import { analyzeUrl } from "@/services/apiService";
 import { AnalysisResult as AnalysisResultType } from "@/types";
 import { AnalysisResult } from "@/components/shared/AnalysisResult";
+import { UrlInput } from "@/components/shared/UrlInput";
+import { LoadingDisplay } from "@/components/shared/LoadingDisplay";
 
 // A map to translate progress messages into percentage values
 const progressSteps: { [key: string]: number } = {
@@ -30,7 +27,7 @@ const progressSteps: { [key: string]: number } = {
 
 export default function ScannerPage() {
     const [url, setUrl] = useState("");
-    const { startAnalysis, result, error, progress, isStopped, stopScanning } =
+    const { startAnalysis, result, error, progress, isStopped, stopScanning, resetState } =
         useAnalysis<AnalysisResultType>();
 
     const handleScan = () => {
@@ -52,14 +49,15 @@ export default function ScannerPage() {
             }
         }
 
-
         if (lastMessage.includes("Crawling")) {
-            const crawlingMessages = progress.filter(p => p.includes("Crawling")).length;
+            const crawlingMessages = progress.filter((p) => p.includes("Crawling")).length;
             currentProgress += Math.min(crawlingMessages * 2, 40);
         }
 
         return currentProgress;
     }, [progress, result, error]);
+
+    const isLoading = progress.length > 0 && !result && !error;
 
     return (
         <div className="container mx-auto p-4">
@@ -71,50 +69,25 @@ export default function ScannerPage() {
                     </CardDescription>
                 </CardHeader>
                 <CardContent>
-                    <div className="grid w-full items-center gap-4">
-                        <div className="flex flex-col space-y-1.5">
-                            <Label htmlFor="url">Website URL</Label>
-                            <Input
-                                id="url"
-                                placeholder="https://example.com"
-                                value={url}
-                                onChange={(e) => setUrl(e.target.value)}
-                            />
-                        </div>
-                    </div>
+                    <UrlInput
+                        value={url}
+                        onChange={setUrl}
+                        onSubmit={handleScan}
+                        isLoading={isLoading}
+                    />
                 </CardContent>
-                <CardFooter>
-                    <Button onClick={handleScan} disabled={!url || (progress.length > 0 && !result && !error)}>
-                        Scan
-                    </Button>
-                </CardFooter>
             </Card>
 
-            {progress.length > 0 && !result && !error && (
-                <Card className="mt-4">
-                    <CardHeader>
-                        <CardTitle>Analysis Progress</CardTitle>
-                    </CardHeader>
-                    <CardContent>
-                        <Progress value={progressValue} className="w-full mb-4" />
-                        <div className="h-48 overflow-y-auto bg-muted p-2 rounded-md">
-                            <ul className="list-disc list-inside">
-                                {progress.map((message, index) => (
-                                    <li key={index} className="text-sm">{message}</li>
-                                ))}
-                            </ul>
-                        </div>
-                        {!isStopped && (
-                            <Button
-                                onClick={stopScanning}
-                                className="mt-4"
-                                variant="destructive"
-                            >
-                                Stop
-                            </Button>
-                        )}
-                    </CardContent>
-                </Card>
+            {isLoading && (
+                <div className="mt-4">
+                    <LoadingDisplay
+                        messages={progress}
+                        progress={progressValue}
+                        onStop={stopScanning}
+                        onReset={resetState}
+                        isStopped={isStopped}
+                    />
+                </div>
             )}
 
             {result && (

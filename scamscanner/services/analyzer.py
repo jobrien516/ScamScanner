@@ -1,10 +1,10 @@
 import re
 import json
 from loguru import logger
-from .llm import generate_analysis
+from services.llm import generate_analysis
 from sqlmodel.ext.asyncio.session import AsyncSession
 
-from ..models.constants import (
+from models.constants import (
     SECRET_ANALYSIS_PROMPT,
     ANALYSIS_PROMPT,
     ANALYSIS_SCHEMA

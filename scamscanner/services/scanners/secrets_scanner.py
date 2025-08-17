@@ -2,12 +2,12 @@ import json
 import asyncio
 from loguru import logger
 
-from .scam_scanner import ScamScanner
-from ..website_fetcher import WebsiteFetcher
-from ..analyzer import WebsiteAnalyzer
-from ...models.schemas import Site
-from ..websocket_manager import WebsocketConnectionManager
-from ..db import get_db_session
+from services.scanners.scam_scanner import ScamScanner
+from services.website_fetcher import WebsiteFetcher
+from services.analyzer import WebsiteAnalyzer
+from models.schemas import Site
+from services.websocket_manager import WebsocketConnectionManager
+from services.db import get_db_session
 
 
 class SecretsScanner:

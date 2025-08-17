@@ -5,10 +5,10 @@ from loguru import logger
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlmodel import select
 
-from ..models.schemas import Site, SubPage
-from ..exceptions import WebsiteFetchError
-from ..models.constants import DEMO_SITES
-from .websocket_manager import WebsocketConnectionManager
+from models.schemas import Site, SubPage
+from exceptions import WebsiteFetchError
+from models.constants import DEMO_SITES
+from services.websocket_manager import WebsocketConnectionManager
 
 
 def _normalize_url(url: str) -> str:

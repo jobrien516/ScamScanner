@@ -7,8 +7,8 @@ from loguru import logger
 from sqlmodel import select, delete
 from sqlalchemy import desc
 
-from ...models.schemas import AnalysisResult
-from ...services.db import get_db_session
+from models.schemas import AnalysisResult
+from services.db import get_db_session
 
 history_router = APIRouter()
 

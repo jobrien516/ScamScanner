@@ -47,6 +47,28 @@ export interface HistoryAnalysisResult extends AnalysisResult {
   last_analyzed_at: string;
 }
 
+export type AuditSeverity = "Low" | "Medium" | "High";
+
+export interface AuditFinding {
+  category: string;
+  description: string;
+  recommendation: string;
+  severity: AuditSeverity;
+  codeSnippet?: string;
+  fileName?: string;
+  lineNumber?: number;
+}
+
+export interface AuditResult {
+  overallGrade: "A" | "B" | "C" | "D" | "F";
+  qualityScore: number;
+  summary: string;
+  detailedAnalysis: AuditFinding[];
+  id?: number;
+  source_identifier?: string;
+  last_analyzed_at?: string;
+}
+
 export enum ViewState {
   START = "START",
   MANUAL_INPUT = "MANUAL_INPUT",

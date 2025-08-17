@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-from .v1.analyze import analyze_router
-from .v1.history import history_router
-from .v1.settings import settings_router
-from .v1.ws import websocket_router
-from .v1.root import root_router
+from api.v1.analyze import analyze_router
+from api.v1.history import history_router
+from api.v1.settings import settings_router
+from api.v1.ws import websocket_router
+from api.v1.root import root_router
 
 router = APIRouter()
 

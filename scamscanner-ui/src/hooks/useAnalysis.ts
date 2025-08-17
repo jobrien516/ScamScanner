@@ -14,6 +14,9 @@ export const useAnalysis = <T>() => {
   const wsRef = useRef<WebSocket | null>(null);
 
   useEffect(() => {
+    // Skip WebSocket setup during SSR
+    if (typeof window === "undefined") return;
+
     if (!jobId || isStopped) {
       if (wsRef.current) {
         wsRef.current.close();
@@ -43,7 +46,7 @@ export const useAnalysis = <T>() => {
         analysisCompleted = true;
       } catch {
         const message = event.data as string;
-        if (message.toLowerCase().includes("error")) {
+        if (typeof message === "string" && message.toLowerCase().includes("error")) {
           handleError(message);
         } else {
           setProgress((prev) => [...prev, message]);
@@ -63,7 +66,7 @@ export const useAnalysis = <T>() => {
   }, [jobId, isStopped]);
 
   const startAnalysis = useCallback(
-    async (apiCallPromise: () => Promise<{ job_id: string }>) => {
+    async (apiCall: () => Promise<{ job_id: string }>) => {
       setView(ViewState.LOADING);
       setError(null);
       setProgress([]);
@@ -71,7 +74,8 @@ export const useAnalysis = <T>() => {
       setJobId(null);
       setIsStopped(false);
       try {
-        const response = await apiCallPromise();
+        // Invoke provided API call to get a job_id
+        const response = await apiCall();
         setJobId(response.job_id);
       } catch (err) {
         const errorMessage =

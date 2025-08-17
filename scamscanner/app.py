@@ -4,9 +4,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from loguru import logger
 
-from .services.db import init_db
-from .api.endpoints import router
-from .services.websocket_manager import WebsocketConnectionManager
+from services.db import init_db
+from api.endpoints import router
+from services.websocket_manager import WebsocketConnectionManager
 
 
 # @asynccontextmanager

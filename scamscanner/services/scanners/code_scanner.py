@@ -6,12 +6,12 @@ from loguru import logger
 from pathlib import Path
 from fastapi.concurrency import run_in_threadpool
 
-from ..website_fetcher import WebsiteFetcher
-from ..websocket_manager import WebsocketConnectionManager
-from ...models.schemas import Site, AuditResult
+from services.website_fetcher import WebsiteFetcher
+from services.websocket_manager import WebsocketConnectionManager
+from models.schemas import Site, AuditResult
 
-from ...models.constants import CODE_AUDITOR_PROMPT, CODE_AUDITOR_SCHEMA
-from .base import Scanner
+from models.constants import CODE_AUDITOR_PROMPT, CODE_AUDITOR_SCHEMA
+from services.scanners.base import Scanner
 
 class CodeScanner(Scanner):
     """Orchestrates the code audit workflow."""

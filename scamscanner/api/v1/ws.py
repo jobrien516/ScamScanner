@@ -4,7 +4,7 @@ from fastapi import (
     WebSocketDisconnect,
 )
 from loguru import logger
-from ...services.websocket_manager import wsman
+from services.websocket_manager import wsman
 
 websocket_router = APIRouter()
 

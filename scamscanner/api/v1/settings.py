@@ -4,8 +4,8 @@ from fastapi import (
 )
 from sqlmodel import select
 
-from ...models.schemas import Settings
-from ...services.db import get_db_session
+from models.schemas import Settings
+from services.db import get_db_session
 
 settings_router = APIRouter()
 

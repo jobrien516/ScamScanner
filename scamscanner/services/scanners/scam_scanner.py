@@ -4,12 +4,12 @@ from loguru import logger
 from sqlmodel import select
 from sqlalchemy.orm import selectinload
 
-from .base import Scanner
-from ..website_fetcher import WebsiteFetcher
-from ..analyzer import WebsiteAnalyzer
-from ..domain_analyzer import DomainAnalyzer
-from ..websocket_manager import WebsocketConnectionManager
-from ...models.schemas import AnalysisResult, Site
+from services.scanners.base import Scanner
+from services.website_fetcher import WebsiteFetcher
+from services.analyzer import WebsiteAnalyzer
+from services.domain_analyzer import DomainAnalyzer
+from services.websocket_manager import WebsocketConnectionManager
+from models.schemas import AnalysisResult, Site
 
 class ScamScanner(Scanner):
     """Orchestrates the scam analysis workflow."""

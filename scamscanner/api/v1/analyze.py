@@ -5,9 +5,9 @@ from fastapi import (
     BackgroundTasks,
 )
 
-from ...models.schemas import UrlRequest, HtmlRequest, SecretsRequest, CodeAuditRequest
-from ...services.scanners import CodeScanner, ScamScanner, SecretsScanner
-from ...services.websocket_manager import wsman
+from models.schemas import UrlRequest, HtmlRequest, SecretsRequest, CodeAuditRequest
+from services.scanners import CodeScanner, ScamScanner, SecretsScanner
+from services.websocket_manager import wsman
 
 analyze_router = APIRouter()
 

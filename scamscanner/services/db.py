@@ -7,7 +7,7 @@ from sqlmodel.ext.asyncio.session import AsyncSession
 from loguru import logger
 from dotenv import load_dotenv
 from contextlib import asynccontextmanager
-from ..models.schemas import Settings
+from models.schemas import Settings
 
 load_dotenv()
 

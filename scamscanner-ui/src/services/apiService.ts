@@ -8,10 +8,10 @@ export class ApiError extends Error {
   }
 }
 
-async function fetchApi(
+export async function fetchApi(
   endpoint: string,
   options: RequestInit = {}
-): Promise<any> {
+): Promise<unknown> {
   try {
     const response = await fetch(`${BACKEND_API_URL}${endpoint}`, options);
     if (!response.ok) {
@@ -26,7 +26,7 @@ async function fetchApi(
 }
 
 export const getHistory = (): Promise<HistoryAnalysisResult[]> =>
-  fetchApi("/history");
+  fetchApi("/history") as Promise<HistoryAnalysisResult[]>;
 
 export const analyzeUrl = (
   url: string,
@@ -37,13 +37,40 @@ export const analyzeUrl = (
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ url, scan_depth, use_domain_analyzer }),
-  });
+  }) as Promise<{ job_id: string }>;
 
-export const getSettings = (): Promise<AppSettings> => fetchApi("/settings");
+export const startHtmlAnalysis = (html: string): Promise<{ job_id: string }> =>
+  fetchApi("/analyze-html", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ html }),
+  }) as Promise<{ job_id: string }>;
+
+export const analyzeSecrets = (payload: {
+  content?: string;
+  url?: string;
+}): Promise<{ job_id: string }> =>
+  fetchApi("/analyze-secrets", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }) as Promise<{ job_id: string }>;
+
+export const analyzeCode = (payload: {
+  url?: string;
+  code?: string;
+}): Promise<{ job_id: string }> =>
+  fetchApi("/analyze-code", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  }) as Promise<{ job_id: string }>;
+
+export const getSettings = (): Promise<AppSettings> => fetchApi("/settings") as Promise<AppSettings>;
 
 export const updateSettings = (settings: AppSettings): Promise<AppSettings> =>
   fetchApi("/settings", {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify(settings),
-  });
+  }) as Promise<AppSettings>;

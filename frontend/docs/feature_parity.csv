@@ -1,0 +1,71 @@
+Category,Name,File,Purpose/Description,Props/Signature,Return Type,Dependencies/Imports,Key Styles,Content Source,Used By,Notes
+Route,/,frontend/App.tsx,Home page route mounts Page(Home),,,react-router-dom; components/Page; components/pages/Home,,,App.tsx,
+Route,/scanner,frontend/App.tsx,Website scanner flow mounts Page(Scanner),,,react-router-dom; components/Page; components/pages/Scanner,,,App.tsx,
+Route,/secrets,frontend/App.tsx,Secrets scanner flow mounts Page(SecretsScanner),,,react-router-dom; components/Page; components/pages/SecretsScanner,,,App.tsx,
+Route,/auditor,frontend/App.tsx,Code audit flow mounts Page(CodeScanner),,,react-router-dom; components/Page; components/pages/CodeScanner,,,App.tsx,
+Route,/history,frontend/App.tsx,Past analyses list mounts Page(ScanHistory),,,react-router-dom; components/Page; components/pages/ScanHistory,,,App.tsx,
+Route,/mission,frontend/App.tsx,Static mission page mounts Page(Mission),,,react-router-dom; components/Page; components/pages/Mission,,,App.tsx,
+Route,/settings,frontend/App.tsx,Settings page mounts Page(Settings),,,react-router-dom; components/Page; components/pages/Settings,,,App.tsx,
+Route,/support,frontend/App.tsx,Support page mounts Page(Support),,,react-router-dom; components/Page; components/pages/Support,,,App.tsx,
+Page,Home,frontend/components/pages/Home.tsx,Landing with CTA and info cards,,,react-router-dom; constants/pageContent; components/Card; components/Icons,"py-8 max-w-6xl mx-auto animate-fade-in; button bg-blue-600 hover:bg-blue-700; cards border-slate-700",pageContent.home,Router,
+Page,Scanner,frontend/components/pages/Scanner.tsx,Main site scam scanner using WebSocket job flow,,,{"hooks/useAnalysis"; services/apiService(analyzeUrl,startHtmlAnalysis); components: UrlInput,ManualInput,LoadingDisplay,AnalysisResult,HowItWorks},select/input classes; grid; animate-fade-in,DEMO_SITES; constants,Browser Router,Options: scanDepth deep/soft; Domain Intelligence checkbox
+Page,SecretsScanner,frontend/components/pages/SecretsScanner.tsx,Secrets scanning flow (URL or content) via analyzeSecrets,,,{hooks/useAnalysis; services/apiService(analyzeSecrets); components: UrlInput,ManualInput,LoadingDisplay,AnalysisResult},button texts: "Scan for Secrets"/"Scan Again",,Router,
+Page,CodeScanner,frontend/components/pages/CodeScanner.tsx,Repository/code audit flow via analyzeCode,,,{hooks/useAnalysis; services/apiService(analyzeCode); components: UrlInput,ManualInput,LoadingDisplay,AuditResultDisplay},custom label "GitHub Repository URL"; title override; reset text,,Router,
+Page,ScanHistory,frontend/components/pages/ScanHistory.tsx,Fetch and display past analyses with badges,,HistoryAnalysisResult[],services/apiService(getHistory); components: RiskBadge,Spinner,"list items bg-slate-800/50 border-slate-700; font-mono URLs",,Router,
+Page,Mission,frontend/components/pages/Mission.tsx,Static mission content,, ,constants/pageContent; components/Card,"animate-fade-in; text-slate-300",pageContent.mission,Router,
+Page,Settings,frontend/components/pages/Settings.tsx,App settings load/save with notifications,,AppSettings,services/apiService(getSettings,updateSettings); components: Card,Spinner,form inputs,form input classes; toggle checkboxes; success/error banners,,Router,
+Page,Support,frontend/components/pages/Support.tsx,Support/Donate page with button to BuyMeACoffee,, ,constants/pageContent; components: Card,SupportButton,"animate-fade-in text-center; button custom colors via inline style",pageContent.support,Router,
+Component,Page,frontend/components/Page.tsx,Layout wrapper used for all routes,children: ReactNode,,components/Header,Footer,Navbar; React Router Outlet?,container styles,,App routes,
+Component,Header,frontend/components/Header.tsx,Site header (not inspected),,, , , ,Site chrome,
+Component,Footer,frontend/components/Footer.tsx,Site footer (not inspected),,, , , ,Site chrome,
+Component,Navbar,frontend/components/Navbar.tsx,Top navigation (not inspected),,, , ,navbar-width custom class,Site chrome,
+Component,Card,frontend/components/Card.tsx,Reusable container with optional title,"{ children, title?, className? }",ReactNode,React,"bg-slate-800/50 rounded-xl border border-slate-600 shadow-2xl m-6 sm:p-8",,Many pages,Common look-and-feel container
+Component,UrlInput,frontend/components/UrlInput.tsx,URL input with scan button and slot for extra controls,"{ onScan(url), onUploadClick, error?, children?, scanButtonText?, label? }",void,components/Icons(SearchIcon),"form container bg-slate-800/50; input bg-slate-900 focus:ring-blue-500; primary button bg-blue-600 hover:bg-blue-700; link text-blue-400",,Scanner; SecretsScanner; CodeScanner,Shows upload link beneath input
+Component,ManualInput,frontend/components/ManualInput.tsx,Upload file or paste text and analyze; back action,"{ onAnalyze(html), error, url, onBack }",void,components/Icons(UploadIcon,BackIcon),"container bg-slate-800/50; textarea bg-slate-900; button styles; alert bg-yellow-900/50",,Scanner; SecretsScanner; CodeScanner,
+Component,LoadingDisplay,frontend/components/LoadingDisplay.tsx,Shows spinner, stop/reset button, and live progress log,"{ onStop, isStopped, onReset, progressMessages, title?, stopButtonText?, resetButtonText? }",void,components/Spinner; components/WSProgressLog,"container bg-slate-800/50; buttons blue/red variants; progress font-mono",,All scanner flows,
+Component,Spinner,frontend/components/Spinner.tsx,SVG spinner, , , ,"animate-spin h-12 w-12 text-blue-500",,LoadingDisplay; ScanHistory,
+Component,WSProgressLog,frontend/components/WSProgressLog.tsx,Scrollable live log of WebSocket messages,"{ messages: string[] }",void,React,useRef auto-scroll; "bg-slate-900 rounded p-4 h-48 overflow-y-auto font-mono text-sm",,LoadingDisplay,
+Component,AnalysisResult,frontend/components/AnalysisResult.tsx,Display website analysis results with risk gauge and findings,"{ result, error, onScanNew, url? }",void,components: RiskBadge,DomainInfoCard,RiskScoreGauge,FindingCard; types: AnalysisResult,"grids; cards; buttons; download buttons .md/.txt",,Scanner; SecretsScanner,Includes download as Markdown/Text
+Component,AuditResultDisplay,frontend/components/AuditResultDisplay.tsx,Display code audit results with grade and findings,"{ result, error, onScanNew, identifier? }",void,components: RiskScoreGauge,Card; types: AuditResult,"cards with border-l severity color; grid of findings",,CodeScanner,
+Component,DomainInfoCard,frontend/components/DomainInfoCard.tsx,Show WHOIS/Domain info if present,"{ info: DomainInfo }",void,types: DomainInfo,"bg-slate-800/50 rounded-xl border-slate-700; dl rows",,AnalysisResult,
+Component,FindingCard,frontend/components/FindingCard.tsx,Render individual finding with optional code/file (not inspected),,, , , ,AnalysisResult,
+Component,RiskBadge,frontend/components/RiskBadge.tsx,Colored badge for RiskLevel,"{ risk: RiskLevel, large? }",void,types: RiskLevel,"per-level styles: green/yellow/orange/red; rounded-full",,AnalysisResult; ScanHistory,
+Component,RiskScoreGauge,frontend/components/RiskScoreGauge.tsx,Circular score gauge with animated stroke,"{ score: number }",void, ,"transition-all duration-1000 ease-in-out; color by thresholds",,AnalysisResult; AuditResultDisplay,
+Component,HowItWorks,frontend/components/HowItWorks.tsx,Render guided steps from content, , ,constants/pageContent; components/Card,"grid md:grid-cols-2 gap-... animate-fade-in",pageContent.howItWorks,Home; Scanner
+Component,SupportButton,frontend/components/SupportButton.tsx,External link button with hover color swap,"{ content, url, color, hoverColor, textColor? }",void,window.open,"inline style for colors; rounded-lg font-bold",,Support,
+Component,Icons,frontend/components/Icons.tsx,SVG icon set (Shield, Search, Upload, Back, CheckCircle, Lock, Code, Alert, Link, Check, X),,, ,"tailwind-sized icons (e.g., h-8 w-8 text-*)",,Many,
+Hook,useAnalysis,frontend/hooks/useAnalysis.ts,WebSocket job lifecycle and state for analyses,"<T>() => { view,result,error,progress,isStopped,setView,startAnalysis,resetState,stopScanning }",,types: ViewState; constants: BACKEND_API_URL; WebSocket,"adds \"Connection established...\"; error handling; stop cancels and appends log",,Scanner; SecretsScanner; CodeScanner,WS URL = BACKEND_API_URL with http→ws at /ws/{job_id}
+Service,apiService.fetchApi,frontend/services/apiService.ts,Internal helper wrapper around fetch, (endpoint: string, options?: RequestInit) => Promise<any>,any,constants: BACKEND_API_URL,,,Used by all API helpers,
+API,getHistory,frontend/services/apiService.ts,Fetch past analyses, () => Promise<HistoryAnalysisResult[]>,HistoryAnalysisResult[],types: HistoryAnalysisResult,,,ScanHistory,
+API,analyzeUrl,frontend/services/apiService.ts,Start URL analysis job, (url: string, scan_depth: string, use_domain_analyzer: boolean) => Promise<{job_id}>,{"job_id": string},constants: BACKEND_API_URL, , ,Scanner,
+API,startHtmlAnalysis,frontend/services/apiService.ts,Start analysis job from raw HTML, (html: string) => Promise<{job_id}>,{"job_id": string},constants: BACKEND_API_URL, , ,Scanner,
+API,analyzeSecrets,frontend/services/apiService.ts,Start secrets analysis job, ({content?,url?}) => Promise<{job_id}>,{"job_id": string},constants: BACKEND_API_URL, , ,SecretsScanner,
+API,analyzeCode,frontend/services/apiService.ts,Start code audit job, ({url?,code?}) => Promise<{job_id}>,{"job_id": string},constants: BACKEND_API_URL, , ,CodeScanner,
+API,getSettings,frontend/services/apiService.ts,Fetch app settings, () => Promise<AppSettings>,AppSettings,types: AppSettings, , ,Settings,
+API,updateSettings,frontend/services/apiService.ts,Update app settings, (settings: AppSettings) => Promise<AppSettings>,AppSettings,types: AppSettings, , ,Settings,
+Service,websiteAnalyzer.analyzeWebsiteHtml,frontend/services/websiteAnalyzer.ts,Analyze HTML and return result directly, (html: string) => Promise<AnalysisResult>,AnalysisResult,constants: BACKEND_API_URL, , ,Unused in pages (aux),
+Service,websiteAnalyzer.analyzeWebsiteViaApi,frontend/services/websiteAnalyzer.ts,Start URL analysis and return response, (url: string) => Promise<any>,any,constants: BACKEND_API_URL, , ,Unused in pages (aux),
+Service,websiteFetcher.fetchWebsiteHtml,frontend/services/websiteFetcher.ts,Fetch HTML via server or use DEMO_SITES, (url: string) => Promise<string>,string,constants: BACKEND_API_URL,DEMO_SITES based short-circuit, ,Aux utility,
+Model,AppSettings,frontend/types.ts,Application/server settings model,,,{ id:number; gemini_api_key?:string|null; max_output_tokens:number; default_use_secrets_scanner:boolean; default_use_domain_analyzer:boolean }, , ,Used in Settings,
+Enum,RiskLevel,frontend/types.ts,Risk classification enum,, ,{"Low","Medium","High","Very High","Unknown"}, , ,Used across UI and results,
+Model,AnalysisFinding,frontend/types.ts,Finding item for AnalysisResult,,,{ category:string; description:string; severity:RiskLevel; codeSnippet?; fileName?; lineNumber? }, , ,AnalysisResult,
+Model,DomainInfo,frontend/types.ts,Domain metadata from WHOIS,,,{ registrar?; creation_date?; expiration_date?; domain_age_days? }, , ,DomainInfoCard,
+Model,AnalysisResult,frontend/types.ts,Website analysis result,,,{ overallRisk:RiskLevel; riskScore:number; summary:string; detailedAnalysis:AnalysisFinding[]; domainInfo?; id?; site_url?; last_analyzed_at? }, , ,Scanner; SecretsScanner,
+Model,HistoryAnalysisResult,frontend/types.ts,History row extends AnalysisResult,, ,extends AnalysisResult + { id:number; site_url:string; last_analyzed_at:string }, , ,ScanHistory,
+Model,AuditFinding,frontend/types.ts,Finding item for code audit,,,{ category; description; recommendation; severity:"Low"|"Medium"|"High"; codeSnippet?; fileName?; lineNumber? }, , ,AuditResultDisplay,
+Model,AuditResult,frontend/types.ts,Code audit result,, ,{ overallGrade:"A"|"B"|"C"|"D"|"F"; qualityScore:number; summary:string; detailedAnalysis:AuditFinding[]; id?; source_identifier?; last_analyzed_at? }, , ,CodeScanner,
+Enum,ViewState,frontend/types.ts,UI view state for flows,, ,{"START","MANUAL_INPUT","LOADING","RESULT"}, , ,useAnalysis consumers,
+Constant,BACKEND_API_URL,frontend/constants.ts,Base API URL from env VITE_API_BASE_URL,,,Vite env var || "http://localhost:8000", , ,All services and WS,
+Constant,pageContent.header,frontend/constants.ts,Header title/subtitle text,,, , ,pageContent.header,Header component,
+Constant,pageContent.footer,frontend/constants.ts,Footer poweredBy/copyright,,, , ,pageContent.footer,Footer component,
+Constant,pageContent.home,frontend/constants.ts,Home page textual content and resources,,, ,"Buttons/CTAs and sections",pageContent.home,Home page,
+Constant,pageContent.mission,frontend/constants.ts,Mission page text,,, , ,pageContent.mission,Mission page,
+Constant,pageContent.howItWorks,frontend/constants.ts,How It Works steps,,, , ,pageContent.howItWorks,HowItWorks component,
+Constant,pageContent.support,frontend/constants.ts,Support page text and button labels,,, , ,pageContent.support,Support page,
+Constant,ANALYSIS_PROMPT,frontend/constants.ts,Prompt text for AI analysis (server-aligned),,, , , ,For reference; not used in UI
+Constant,ANALYSIS_SCHEMA,frontend/constants.ts,Schema for analysis response using @google/genai Type,,,@google/genai Type constants, , ,For reference; not used in UI
+Constant,DEMO_SITES.demo-safe.com,frontend/constants.ts,Embedded safe demo HTML,,, , ,Used by Scanner to short-circuit,Normalize URL sans scheme/www/trailing slash
+Constant,DEMO_SITES.demo-scam.com,frontend/constants.ts,Embedded scammy demo HTML,,, , ,Used by Scanner to short-circuit,Contains eval(atob(...)) and hidden iframe
+Styling,Tailwind config,frontend/tailwind.config.js,Content globs and theme/plugins,,, ,content globs exclude components/pages/* (risk), ,Build,Add pages/** glob to avoid purging
+Styling,Global CSS,frontend/index.css,Includes Tailwind layers and .navbar-width,,, ,".navbar-width { width: calc(42 * 69px / 2) }", ,Navbar,
+Styling,Animation utility, ,Class name animate-fade-in used widely,,, ,Not defined in CSS/config; add keyframes or plugin, ,Home; Mission; Results; Logs,Ensure to port animation support

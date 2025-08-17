@@ -10,13 +10,13 @@ from sqlmodel import select
 from sqlmodel.ext.asyncio.session import AsyncSession
 from sqlalchemy.orm import selectinload
 
-from ..website_fetcher import WebsiteFetcher
-from ..analyzer import WebsiteAnalyzer
-from ..domain_analyzer import DomainAnalyzer
-from ..websocket_manager import WebsocketConnectionManager
-from ...models.schemas import AnalysisResult, Site, AuditResult
-from ...services.db import get_db_session
-from ...models.constants import CODE_AUDITOR_PROMPT, CODE_AUDITOR_SCHEMA
+from services.website_fetcher import WebsiteFetcher
+from services.analyzer import WebsiteAnalyzer
+from services.domain_analyzer import DomainAnalyzer
+from services.websocket_manager import WebsocketConnectionManager
+from models.schemas import AnalysisResult, Site, AuditResult
+from services.db import get_db_session
+from models.constants import CODE_AUDITOR_PROMPT, CODE_AUDITOR_SCHEMA
 
 
 class Scanner:
