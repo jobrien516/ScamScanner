@@ -37,7 +37,6 @@ class WebsiteAnalyzer:
                 return response
             else:
                 logger.warning("AI model returned an empty response for content analysis. Returning default empty result.")
-                # Return a default structure that matches the schema
                 return json.dumps({
                     "overallRisk": "Unknown",
                     "riskScore": 0,
@@ -62,7 +61,6 @@ class WebsiteAnalyzer:
                 return response
             else:
                 logger.warning("AI model returned an empty response for secrets scan. Returning default empty result.")
-                # Return a default structure with an empty list of findings
                 return json.dumps({"detailedAnalysis": []})
         except Exception as e:
             logger.error(f"Error during secret analysis: {e}")
