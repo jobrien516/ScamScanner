@@ -5,9 +5,6 @@ from scamscanner.services.websocket_manager import WebsocketConnectionManager
 
 @pytest.mark.asyncio
 async def test_websocket_manager_connect_disconnect():
-    """
-    Tests that the WebsocketConnectionManager can connect and disconnect a client.
-    """
     manager = WebsocketConnectionManager()
     websocket = AsyncMock()
     job_id = "test_job_1"
@@ -22,9 +19,6 @@ async def test_websocket_manager_connect_disconnect():
 
 @pytest.mark.asyncio
 async def test_websocket_manager_send_update():
-    """
-    Tests that the WebsocketConnectionManager can send a text update to a client.
-    """
     manager = WebsocketConnectionManager()
     websocket = AsyncMock()
     job_id = "test_job_2"
@@ -37,9 +31,6 @@ async def test_websocket_manager_send_update():
 
 @pytest.mark.asyncio
 async def test_websocket_manager_send_final_result():
-    """
-    Tests that the WebsocketConnectionManager can send a final JSON result to a client.
-    """
     manager = WebsocketConnectionManager()
     websocket = AsyncMock()
     job_id = "test_job_3"
