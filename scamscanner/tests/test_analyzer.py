@@ -5,10 +5,6 @@ from scamscanner.services.analyzer import WebsiteAnalyzer
 
 @pytest.mark.asyncio
 async def test_analyze_content_success():
-    """
-    Tests that the analyze_content method returns a valid response when the
-    generative AI model returns a valid response.
-    """
     analyzer = WebsiteAnalyzer()
     db_session = AsyncMock()
     with patch(
@@ -22,10 +18,6 @@ async def test_analyze_content_success():
 
 @pytest.mark.asyncio
 async def test_analyze_for_secrets_success():
-    """
-    Tests that the analyze_for_secrets method returns a valid response when the
-    generative AI model returns a valid response.
-    """
     analyzer = WebsiteAnalyzer()
     db_session = AsyncMock()
     with patch(
