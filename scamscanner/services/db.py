@@ -36,7 +36,6 @@ async def init_db():
     async with engine.begin() as conn:
         await conn.run_sync(SQLModel.metadata.create_all)
 
-    # Ensure a default settings row exists
     async with get_db_session() as session:
         statement = select(Settings).where(Settings.id == 1)
         result = await session.exec(statement)
