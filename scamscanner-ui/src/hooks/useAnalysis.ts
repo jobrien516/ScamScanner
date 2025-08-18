@@ -74,7 +74,6 @@ export const useAnalysis = <T>() => {
       setJobId(null);
       setIsStopped(false);
       try {
-        // Invoke provided API call to get a job_id
         const response = await apiCall();
         setJobId(response.job_id);
       } catch (err) {
