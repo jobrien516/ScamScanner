@@ -15,10 +15,9 @@ import { AnalysisResult } from "@/components/shared/AnalysisResult";
 import { UrlInput } from "@/components/shared/UrlInput";
 import { LoadingDisplay } from "@/components/shared/LoadingDisplay";
 
-// A map to translate progress messages into percentage values
 const progressSteps: { [key: string]: number } = {
     "Connection established": 5,
-    "Crawling": 10, // Crawling will be handled dynamically
+    "Crawling": 10,
     "Crawl complete": 50,
     "Performing domain intelligence lookup": 60,
     "Scanning for exposed secrets": 75,
