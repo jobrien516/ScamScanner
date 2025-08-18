@@ -6,10 +6,6 @@ from datetime import datetime
 
 @pytest.mark.asyncio
 async def test_get_domain_info_success():
-    """
-    Tests that the get_domain_info method returns a dictionary with the correct
-    domain information when the WHOIS lookup is successful.
-    """
     analyzer = DomainAnalyzer()
 
     class MockWhois:
@@ -29,9 +25,6 @@ async def test_get_domain_info_success():
 
 @pytest.mark.asyncio
 async def test_get_domain_info_failure():
-    """
-    Tests that the get_domain_info method returns None when the WHOIS lookup fails.
-    """
     analyzer = DomainAnalyzer()
     with patch(
         "whois.whois", side_effect=Exception("WHOIS lookup failed")
