@@ -1,4 +1,3 @@
-// Local fallback for schema type literals to avoid external dependency at build time
 const Type = {
   OBJECT: "object",
   STRING: "string",
