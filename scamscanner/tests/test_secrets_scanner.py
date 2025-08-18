@@ -6,9 +6,6 @@ from scamscanner.models.schemas import AnalysisResult, RiskLevel
 
 @pytest.mark.asyncio
 async def test_run_analysis_with_url():
-    """
-    Tests the secrets scanner's run_analysis method with a URL.
-    """
     wsman = AsyncMock()
     job_id = "test_secrets_job_url"
     scanner = SecretsScanner(job_id=job_id, wsman=wsman)
@@ -28,9 +25,7 @@ async def test_run_analysis_with_url():
             ) as mock_analyze,
             patch.object(scanner.manager, "_save", new_callable=AsyncMock) as mock_save,
         ):
-            # Configure mocks
             mock_fetcher_instance = mock_fetcher.return_value
-            # This is the key change: ensure the mock returns a coroutine
             mock_fetcher_instance.fetch_url_content = AsyncMock(
                 return_value="some content with secrets"
             )
@@ -48,7 +43,6 @@ async def test_run_analysis_with_url():
 
             await scanner.run_analysis(url="http://example.com")
 
-            # Assertions
             wsman.send_update.assert_any_call(
                 f"Fetching content from http://example.com...", job_id
             )
@@ -61,9 +55,6 @@ async def test_run_analysis_with_url():
 
 @pytest.mark.asyncio
 async def test_run_analysis_with_content():
-    """
-    Tests the secrets scanner's run_analysis method with raw content.
-    """
     wsman = AsyncMock()
     job_id = "test_secrets_job_content"
     scanner = SecretsScanner(job_id=job_id, wsman=wsman)
