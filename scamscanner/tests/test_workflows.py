@@ -6,10 +6,6 @@ from scamscanner.models.schemas import Site, AnalysisResult, AuditResult, RiskLe
 
 @pytest.mark.asyncio
 async def test_run_analysis_with_url():
-    """
-    Tests that the run_analysis method correctly calls the necessary services
-    when a URL is provided.
-    """
     wsman = AsyncMock()
     job_id = "test_job_id"
 
@@ -56,10 +52,6 @@ async def test_run_analysis_with_url():
 
 @pytest.mark.asyncio
 async def test_run_code_audit_with_code():
-    """
-    Tests that the run_code_audit method correctly calls the necessary services
-    when raw code is provided.
-    """
     wsman = AsyncMock()
     job_id = "test_audit_job"
 
