@@ -12,10 +12,6 @@ def client():
 
 
 def test_analyze_url(client):
-    """
-    Tests that the analyze_url endpoint returns a 202 Accepted response with a
-    job_id when the request is valid.
-    """
     with patch(
         "scamscanner.api.v1.analyze.run_analysis_task"
     ) as mock_run_analysis_task:
@@ -33,10 +29,6 @@ def test_analyze_url(client):
 
 
 def test_analyze_html(client):
-    """
-    Tests that the analyze_html endpoint returns a 202 Accepted response with a
-    job_id when the request is valid.
-    """
     with patch(
         "scamscanner.api.v1.analyze.run_analysis_task"
     ) as mock_run_analysis_task:
@@ -47,10 +39,6 @@ def test_analyze_html(client):
 
 
 def test_analyze_code(client):
-    """
-    Tests that the analyze_code endpoint returns a 202 Accepted response with a
-    job_id when the request is valid.
-    """
     with patch(
         "scamscanner.api.v1.analyze.run_code_audit_task"
     ) as mock_run_code_audit_task:
