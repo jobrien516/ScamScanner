@@ -7,10 +7,6 @@ from scamscanner.exceptions import WebsiteFetchError
 
 @pytest.mark.asyncio
 async def test_fetch_url_content_success():
-    """
-    Tests that the fetch_url_content method returns the content of the URL when
-    the request is successful.
-    """
     wsman = AsyncMock()
     fetcher = WebsiteFetcher("http://example.com", "job_id", wsman)
 
@@ -26,10 +22,6 @@ async def test_fetch_url_content_success():
 
 @pytest.mark.asyncio
 async def test_fetch_url_content_failure():
-    """
-    Tests that the fetch_url_content method raises a WebsiteFetchError when the
-    request fails.
-    """
     wsman = AsyncMock()
     fetcher = WebsiteFetcher("http://example.com", "job_id", wsman)
 
