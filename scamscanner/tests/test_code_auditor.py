@@ -6,21 +6,16 @@ from scamscanner.services.scanners import CodeScanner
 
 @pytest.fixture
 def wsman():
-    """Fixture to create a mock WebsocketConnectionManager."""
     return AsyncMock()
 
 
 @pytest.fixture
 def code_auditor(wsman):
-    """Fixture to create a CodeScanner instance with a mock wsman."""
     return CodeScanner(job_id="test_job_id", wsman=wsman)
 
 
 @pytest.mark.asyncio
 async def test_run_audit_success(code_auditor, wsman):
-    """
-    Tests the successful execution path of the run_audit method.
-    """
     code_to_analyze = "def hello():\n    return 'world'"
     mock_analysis_result = {
         "overallGrade": "A",
@@ -50,9 +45,6 @@ async def test_run_audit_success(code_auditor, wsman):
 
 @pytest.mark.asyncio
 async def test_run_audit_exception_handling(code_auditor, wsman):
-    """
-    Tests that exceptions during the audit process are caught and handled correctly.
-    """
     error_message = "AI model failed"
 
     with (
