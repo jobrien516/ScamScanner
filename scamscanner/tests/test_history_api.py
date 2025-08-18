@@ -13,10 +13,6 @@ def client():
 
 @pytest.mark.asyncio
 async def test_get_analysis_history(client):
-    """
-    Tests that the get_analysis_history endpoint returns a 200 OK response with a
-    list of analysis results when the database query is successful.
-    """
     with patch("scamscanner.api.v1.history.get_db_session") as mock_get_db_session:
         mock_session = AsyncMock()
         mock_result = MagicMock()
@@ -31,10 +27,6 @@ async def test_get_analysis_history(client):
 
 @pytest.mark.asyncio
 async def test_delete_analysis_history(client):
-    """
-    Tests that the delete_analysis_history endpoint returns a 200 OK response with a success message
-    when the database query is successful.
-    """
     with patch("scamscanner.api.v1.history.get_db_session") as mock_get_db_session:
         mock_session = AsyncMock()
         mock_get_db_session.return_value.__aenter__.return_value = mock_session
